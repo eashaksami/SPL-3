@@ -1,10 +1,13 @@
 package com.example.bug_localizer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ClassifyBugReport {
 
@@ -14,6 +17,19 @@ public class ClassifyBugReport {
         return m.matches();
     }
 
+    public List<String> getAllStackTraces(String bugReport) {
+        List<String> traces = new ArrayList<>();
+        Pattern p = Pattern.compile("(.*)?(.+)\\.(.+)(\\((.+)\\.java:\\d+\\)|\\(Unknown Source\\)|\\(Native Method\\))");
+        Matcher m = p.matcher(bugReport);
+        while (m.find()) {
+            String matchedPart = m.group();
+            matchedPart = m.group().substring(0, matchedPart.indexOf("("));
+            traces.add(matchedPart);
+        }
+        System.out.println(traces);
+        return traces;
+    }
+
     public List<String> getAllClassesFromStackTraces(List<String> traces) {
         List<String> classes = new ArrayList<>();
         traces.forEach(t -> {
@@ -21,7 +37,8 @@ public class ClassifyBugReport {
             String className = splits.get(splits.size()-2);
             classes.add(className);
         });
-        return classes;
+        List<String> uniqueClasses = classes.stream().distinct().collect(Collectors.toList());
+        return uniqueClasses;
     }
 
     public List<String> getAllMethodsFromStackTraces(List<String> traces) {
@@ -31,17 +48,18 @@ public class ClassifyBugReport {
             String methodName = splits.get(splits.size()-1);
             methods.add(methodName);
         });
-        return methods;
+        List<String> uniqueMethods = methods.stream().distinct().collect(Collectors.toList());
+        return uniqueMethods;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
-        boolean haveTraces = classifyBugReport.haveStackTrace("bug report content");
-        if(haveTraces) {
+        ReadFile readFile = new ReadFile();
+        String bugReport = readFile.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018-v1.1/BR-Raw/eclipse.jdt.core/46084.txt");
+
+        List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
+        if(traces != null) {
             System.out.println("Type is ST");
-            List<String> traces = new ArrayList<>();
-            traces.add("java.lang.Class.getDeclaredMethods0");
-            traces.add("sun.launcher.LauncherHelper.validateMainClass");
             List<String> classes = classifyBugReport.getAllClassesFromStackTraces(traces);
             List<String> methods = classifyBugReport.getAllMethodsFromStackTraces(traces);
             System.out.println(classes);
