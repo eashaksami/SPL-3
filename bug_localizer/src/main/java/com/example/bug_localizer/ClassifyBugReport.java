@@ -52,6 +52,16 @@ public class ClassifyBugReport {
         return uniqueMethods;
     }
 
+    public String getMethodFromStackTrace(String traces) {
+            List<String> splits = Arrays.stream(traces.split("\\.")).toList();
+            return splits.get(splits.size()-1);
+    }
+
+    public String getClassFromStackTrace(String traces) {
+        List<String> splits = Arrays.stream(traces.split("\\.")).toList();
+        return splits.get(splits.size()-2);
+    }
+
     public static void main(String[] args) throws IOException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         ReadFile readFile = new ReadFile();
