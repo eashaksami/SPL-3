@@ -16,7 +16,7 @@ public class TracesGraphToMatrixRepresentation {
 //        this.methods = methods;
 //    }
 
-    public void representGraphAsMatrix(List<String> traces, Map<Integer, String> tracesMap) {
+    public int[][] representGraphAsMatrix(List<String> traces, Map<Integer, String> tracesMap) {
         Integer previousClassIndex = null;
         Integer previousMethodIndex = null;
 
@@ -58,6 +58,7 @@ public class TracesGraphToMatrixRepresentation {
 //            System.out.println();
 //        }
         printTraceGraph(graph, tracesMap);
+        return graph;
     }
 
     public void printTraceGraph(int[][] graph, Map<Integer, String> tracesMap) {
