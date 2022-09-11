@@ -90,8 +90,8 @@ public class TracesGraphToMatrixRepresentation {
 
     public static void main(String[] args) throws IOException {
         TracesGraphToMatrixRepresentation graphToMatrixRepresentation = new TracesGraphToMatrixRepresentation();
-        ReadFile readFile = new ReadFile();
-        String bugReport = readFile.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
+        FileReader fileReader = new FileReader();
+        String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
         Map<Integer, String> tracesMap = graphToMatrixRepresentation.representStringToMap(

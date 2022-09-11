@@ -3,7 +3,6 @@ package com.example.bug_localizer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,8 +63,8 @@ public class ClassifyBugReport {
 
     public static void main(String[] args) throws IOException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
-        ReadFile readFile = new ReadFile();
-        String bugReport = readFile.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018-v1.1/BR-Raw/eclipse.jdt.core/46084.txt");
+        FileReader fileReader = new FileReader();
+        String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018-v1.1/BR-Raw/eclipse.jdt.core/46084.txt");
 
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
         if(traces != null) {

@@ -1,12 +1,11 @@
 package com.example.bug_localizer;
 
-import java.io.FileReader;
 import java.io.IOException;
 
-public class ReadFile {
+public class FileReader {
 
     public String readFileFromBugReport(String filePath) throws IOException {
-        FileReader fr = new FileReader(filePath);
+        java.io.FileReader fr = new java.io.FileReader(filePath);
         String fileContent = "";
         int i;
         while ((i = fr.read()) != -1) {
@@ -20,7 +19,7 @@ public class ReadFile {
     }
 
     public static void main(String[] args) throws IOException {
-        ReadFile readFile = new ReadFile();
-        readFile.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018-v1.1/BR-Raw/eclipse.jdt.core/46084.txt");
+        FileReader fileReader = new FileReader();
+        fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018-v1.1/BR-Raw/eclipse.jdt.core/46084.txt");
     }
 }
