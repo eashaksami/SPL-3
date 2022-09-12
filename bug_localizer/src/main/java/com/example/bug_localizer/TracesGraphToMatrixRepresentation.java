@@ -7,22 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 public class TracesGraphToMatrixRepresentation {
-
-    private List<String> classes;
-    private List<String> methods;
-
-//    public TracesGraphToMatrixRepresentation(List<String> classes, List<String> methods) {
-//        this.classes = classes;
-//        this.methods = methods;
-//    }
-
     public int[][] representGraphAsMatrix(List<String> traces, Map<Integer, String> tracesMap) {
         Integer previousClassIndex = null;
         Integer previousMethodIndex = null;
 
         int graph[][] = new int[100][100];
+        int count = 0;
 
         for(String trace : traces) {
+            count++;
             ClassifyBugReport classifyBugReport = new ClassifyBugReport();
             String className = classifyBugReport.getClassFromStackTrace(trace);
             String methodName = classifyBugReport.getMethodFromStackTrace(trace);
@@ -51,6 +44,7 @@ public class TracesGraphToMatrixRepresentation {
 
             previousClassIndex = classIndex;
             previousMethodIndex = methodIndex;
+            if(count==10)break;
         }
 //        for(int i = 0; i < 100; i++) {
 //            for(int j = 0; j < 100; j++)

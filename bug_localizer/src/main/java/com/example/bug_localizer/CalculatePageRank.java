@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class CalculatePageRank {
 
-    public void pageRank(int[][] graph) {
+    public double[] pageRank(int[][] graph) {
         double[] prevWeightedVertexArray = new double[graph.length];
         double[] newWeightedVertexArray = new double[graph.length];
 
@@ -54,7 +54,7 @@ public class CalculatePageRank {
                 break;
             }
         }
-
+        return newWeightedVertexArray;
     }
 
     public static void main(String[] args) throws IOException {
