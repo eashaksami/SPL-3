@@ -50,7 +50,7 @@ public class LuceneIndexer {
         for (File file: files) {
             if(file.isDirectory()) {
                 createIndex(file.getPath());
-            } else if(file.getName().toLowerCase().endsWith(".txt")){
+            } else if(file.getName().toLowerCase().endsWith(".java")){
                 indexFile(file);
             }
         }

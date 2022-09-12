@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LuceneTest {
+public class TextNormalizerTest {
     public void removeStopWords() throws IOException {
         CharArraySet enStopSet = EnglishAnalyzer.ENGLISH_STOP_WORDS_SET;
         List<String> result = analyze("48131 � Add @deprecated annotations to deprecated elements\n" +
@@ -33,7 +33,7 @@ public class LuceneTest {
     }
 
     public static void main(String[] args) throws IOException {
-        LuceneTest luceneTest = new LuceneTest();
-        luceneTest.removeStopWords();
+        TextNormalizerTest textNormalizerTest = new TextNormalizerTest();
+        textNormalizerTest.removeStopWords();
     }
 }

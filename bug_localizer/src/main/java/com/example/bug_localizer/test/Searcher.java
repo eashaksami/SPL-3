@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class Searcher {
-    static IndexSearcher indexSearcher;
+    public static IndexSearcher indexSearcher;
     QueryParser queryParser;
 
     public Searcher(String indexDirectoryPath) throws IOException {

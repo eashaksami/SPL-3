@@ -11,7 +11,7 @@ public class TracesGraphToMatrixRepresentation {
         Integer previousClassIndex = null;
         Integer previousMethodIndex = null;
 
-        int graph[][] = new int[100][100];
+        int graph[][] = new int[tracesMap.size()][tracesMap.size()];
         int count = 0;
 
         for(String trace : traces) {
@@ -44,7 +44,7 @@ public class TracesGraphToMatrixRepresentation {
 
             previousClassIndex = classIndex;
             previousMethodIndex = methodIndex;
-            if(count==10)break;
+            if(count==15)break;
         }
 //        for(int i = 0; i < 100; i++) {
 //            for(int j = 0; j < 100; j++)
@@ -85,7 +85,7 @@ public class TracesGraphToMatrixRepresentation {
     public static void main(String[] args) throws IOException {
         TracesGraphToMatrixRepresentation graphToMatrixRepresentation = new TracesGraphToMatrixRepresentation();
         FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
+        String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50027.txt");
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
         Map<Integer, String> tracesMap = graphToMatrixRepresentation.representStringToMap(
