@@ -12,13 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TextNormalizerTest {
-    public void removeStopWords() throws IOException {
+    public List<String> removeStopWords(String query) throws IOException {
         CharArraySet enStopSet = EnglishAnalyzer.ENGLISH_STOP_WORDS_SET;
-        List<String> result = analyze("48131 � Add @deprecated annotations to deprecated elements\n" +
-                "Created attachment 24475 [details]\n" +
-                "Patch to add @deprecated annotations to deprecated elements\n" +
-                "Patch to add @deprecated annotations to deprecated elements", new StopAnalyzer(enStopSet));
+        List<String> result = analyze(query, new StopAnalyzer(enStopSet));
         System.out.println(result);
+        return result;
     }
 
     public List<String> analyze(String text, Analyzer analyzer) throws IOException{
@@ -33,7 +31,11 @@ public class TextNormalizerTest {
     }
 
     public static void main(String[] args) throws IOException {
+        String query = "48131 � Add @deprecated annotations to deprecated elements\n" +
+                "Created attachment 24475 [details]\n" +
+                "Patch to add @deprecated annotations to deprecated elements\n" +
+                "Patch to add @deprecated annotations to deprecated elements";
         TextNormalizerTest textNormalizerTest = new TextNormalizerTest();
-        textNormalizerTest.removeStopWords();
+        textNormalizerTest.removeStopWords(query);
     }
 }
