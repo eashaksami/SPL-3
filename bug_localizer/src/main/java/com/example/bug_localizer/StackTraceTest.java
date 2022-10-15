@@ -6,7 +6,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.springframework.cglib.core.CollectionUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -24,10 +23,10 @@ public class StackTraceTest {
         List<String> methods = classifyBugReport.getAllMethodsFromStackTraces(traces);
         System.out.println(classes);
         System.out.println(methods);
-        TracesGraphToMatrixRepresentation graphToMatrixRepresentation = new TracesGraphToMatrixRepresentation();
+        CreateGraphFromStackTrace stackTraceGraph = new CreateGraphFromStackTrace();
 
-        Map<Integer, String> tracesMap = graphToMatrixRepresentation.representStringToMap(classes, methods);
-        int[][] traceGraph = graphToMatrixRepresentation.representGraphAsMatrix(traces, tracesMap);
+        Map<Integer, String> tracesMap = stackTraceGraph.representStringToMap(classes, methods);
+        int[][] traceGraph = stackTraceGraph.representGraphAsMatrix(traces, tracesMap);
 //        System.out.println(traceGraph);
         CalculatePageRank calculatePageRank = new CalculatePageRank();
         double [] pageRanks = calculatePageRank.pageRank(traceGraph);

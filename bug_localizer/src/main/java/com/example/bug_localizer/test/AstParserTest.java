@@ -1,6 +1,7 @@
 package com.example.bug_localizer.test;
 
 import com.example.bug_localizer.FileReader;
+import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
@@ -11,9 +12,11 @@ public class AstParserTest {
 
     List<String> allClassNames = new ArrayList<>();
     List<String> allMethodNames = new ArrayList<>();
+    List<String> allFieldSignatures = new ArrayList<>();
+
     public CompilationUnit getCompilationUnit() throws IOException {
         FileReader fileReader = new FileReader();
-        String content = fileReader.readFileFromBugReport("/home/sami/Desktop/1.java");
+        String content = fileReader.readFileFromBugReport("/home/sami/Desktop/1538.java");
         ASTParser parser = ASTParser.newParser(AST.JLS18);
         parser.setSource(content.toCharArray());
         parser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -44,11 +47,26 @@ public class AstParserTest {
     public List<String> getAllFieldNames(CompilationUnit compilationUnit) {
         compilationUnit.accept(new ASTVisitor() {
             public boolean visit(SingleVariableDeclaration node) {
-                allMethodNames.add(node.getName().getIdentifier());
+                allFieldSignatures.add(node.getName().getIdentifier());
                 return super.visit(node);
             }
         });
-        return allMethodNames;
+        return allFieldSignatures;
+    }
+
+    public List<String> getAllFieldSignatures(CompilationUnit compilationUnit) {
+        compilationUnit.accept(new ASTVisitor() {
+            public boolean visit(FieldDeclaration node) {
+                allFieldSignatures.add(node.getType().toString());
+                List<VariableDeclarationFragment> variables = node.fragments();
+                variables.forEach(v -> {
+//                    System.out.println(v.getName().getIdentifier());
+                    allFieldSignatures.add(v.getName().getIdentifier());
+                });
+                return super.visit(node);
+            }
+        });
+        return allFieldSignatures;
     }
 
     public static void main(String[] args) throws IOException {
@@ -60,6 +78,8 @@ public class AstParserTest {
 
         System.out.println(astParserTest.getAllMethodNames(cu));
 
-        System.out.println(astParserTest.getAllFieldNames(cu));
+        System.out.println(astParserTest.getAllFieldSignatures(cu));
+
+//        System.out.println(astParserTest.getAllFieldNames1(cu));
     }
 }

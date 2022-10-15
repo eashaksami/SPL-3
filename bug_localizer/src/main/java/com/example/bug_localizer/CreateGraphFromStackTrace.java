@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class TracesGraphToMatrixRepresentation {
+public class CreateGraphFromStackTrace {
     public int[][] representGraphAsMatrix(List<String> traces, Map<Integer, String> tracesMap) {
         Integer previousClassIndex = null;
         Integer previousMethodIndex = null;
@@ -83,7 +83,7 @@ public class TracesGraphToMatrixRepresentation {
     }
 
     public static void main(String[] args) throws IOException {
-        TracesGraphToMatrixRepresentation graphToMatrixRepresentation = new TracesGraphToMatrixRepresentation();
+        CreateGraphFromStackTrace graphToMatrixRepresentation = new CreateGraphFromStackTrace();
         FileReader fileReader = new FileReader();
         String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50027.txt");
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
