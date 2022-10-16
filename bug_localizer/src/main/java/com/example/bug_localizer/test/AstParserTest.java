@@ -14,9 +14,9 @@ public class AstParserTest {
     List<String> allMethodNames = new ArrayList<>();
     List<String> allFieldSignatures = new ArrayList<>();
 
-    public CompilationUnit getCompilationUnit() throws IOException {
+    public CompilationUnit getCompilationUnit(String filePath) throws IOException {
         FileReader fileReader = new FileReader();
-        String content = fileReader.readFileFromBugReport("/home/sami/Desktop/1538.java");
+        String content = fileReader.readFileFromBugReport(filePath);
         ASTParser parser = ASTParser.newParser(AST.JLS18);
         parser.setSource(content.toCharArray());
         parser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -72,7 +72,8 @@ public class AstParserTest {
     public static void main(String[] args) throws IOException {
         AstParserTest astParserTest = new AstParserTest();
 
-        CompilationUnit cu = astParserTest.getCompilationUnit();
+        String filePath = "/home/sami/Desktop/1538.java";
+        CompilationUnit cu = astParserTest.getCompilationUnit(filePath);
 
         System.out.println(astParserTest.getAllClassNames(cu));
 
