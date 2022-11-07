@@ -34,6 +34,10 @@ public class CreateGraphFromStackTrace {
             graph[classIndex][methodIndex] = 1;
             graph[methodIndex][classIndex] = 1;
 
+            /**
+             * graph[sourceNode][destinationNode]
+             * Mi -> Mj
+             * */
             if(previousClassIndex != null) {
                 graph[classIndex][previousClassIndex] = 1;
             }
@@ -70,6 +74,13 @@ public class CreateGraphFromStackTrace {
         System.out.println(methods);
         Map<Integer, String> tracesMap = new HashMap<>();
         Integer i = 0;
+
+        /**
+         * Issue:
+         * if the matrix already contains the class name
+         * then don't add it to the matrix....
+         * Put a checking inside while loop...
+         * */
 
         Iterator<String> itrClasses = classes.iterator();
         Iterator<String> itrMethod = methods.iterator();
