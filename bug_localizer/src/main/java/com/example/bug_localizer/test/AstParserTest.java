@@ -37,6 +37,7 @@ public class AstParserTest {
     public List<String> getAllMethodNames(CompilationUnit compilationUnit) {
         compilationUnit.accept(new ASTVisitor() {
             public boolean visit(MethodDeclaration methodDecl) {
+                System.out.println("parameter list: "+methodDecl.parameters());
                 allMethodNames.add(methodDecl.getName().getFullyQualifiedName());
                 return super.visit(methodDecl);
             }

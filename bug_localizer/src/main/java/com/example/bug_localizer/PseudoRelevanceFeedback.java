@@ -34,8 +34,8 @@ public class PseudoRelevanceFeedback {
 
         for(ScoreDoc scoreDoc: hits.scoreDocs) {
             Document document = Searcher.indexSearcher.doc(scoreDoc.doc);
-            System.out.println("File: " + document.get("path") + " Score: " + scoreDoc.score);
-            topDocumentsPath.add(document.get("path"));
+            System.out.println("File: " + document.get("filepath") + " Score: " + scoreDoc.score);
+            topDocumentsPath.add(document.get("filepath"));
         }
         return topDocumentsPath;
     }
