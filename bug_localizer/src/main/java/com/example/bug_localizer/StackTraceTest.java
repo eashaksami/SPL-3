@@ -15,7 +15,7 @@ public class StackTraceTest {
     public static void main(String[] args) throws IOException, ParseException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50252.txt");
+        String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50252.txt");
 
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
 //        System.out.println("Type is ST");
@@ -55,7 +55,7 @@ public class StackTraceTest {
 
         for(ScoreDoc scoreDoc: hits.scoreDocs) {
             Document document = Searcher.indexSearcher.doc(scoreDoc.doc);
-            System.out.println("File: " + document.get("path") + "Score: " + scoreDoc.score);
+            System.out.println("File: " + document.get("filepath") + "Score: " + scoreDoc.score);
         }
     }
 }

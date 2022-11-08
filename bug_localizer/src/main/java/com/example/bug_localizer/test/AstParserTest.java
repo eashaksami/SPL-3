@@ -1,7 +1,6 @@
 package com.example.bug_localizer.test;
 
 import com.example.bug_localizer.FileReader;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ public class AstParserTest {
 
     public CompilationUnit getCompilationUnit(String filePath) throws IOException {
         FileReader fileReader = new FileReader();
-        String content = fileReader.readFileFromBugReport(filePath);
+        String content = fileReader.readFile(filePath);
         ASTParser parser = ASTParser.newParser(AST.JLS18);
         parser.setSource(content.toCharArray());
         parser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -37,7 +36,7 @@ public class AstParserTest {
     public List<String> getAllMethodNames(CompilationUnit compilationUnit) {
         compilationUnit.accept(new ASTVisitor() {
             public boolean visit(MethodDeclaration methodDecl) {
-                System.out.println("parameter list: "+methodDecl.parameters());
+//                System.out.println("parameter list: "+methodDecl.parameters());
                 allMethodNames.add(methodDecl.getName().getFullyQualifiedName());
                 return super.visit(methodDecl);
             }

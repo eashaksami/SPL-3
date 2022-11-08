@@ -64,7 +64,7 @@ public class ClassifyBugReport {
     public static void main(String[] args) throws IOException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
+        String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
 
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
         if(traces != null) {

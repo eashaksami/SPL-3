@@ -96,7 +96,7 @@ public class CreateGraphFromStackTrace {
     public static void main(String[] args) throws IOException {
         CreateGraphFromStackTrace graphToMatrixRepresentation = new CreateGraphFromStackTrace();
         FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50027.txt");
+        String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50027.txt");
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
         Map<Integer, String> tracesMap = graphToMatrixRepresentation.representStringToMap(

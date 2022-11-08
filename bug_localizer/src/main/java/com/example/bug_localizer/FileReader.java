@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class FileReader {
 
-    public String readFileFromBugReport(String filePath) throws IOException {
+    public String readFile(String filePath) throws IOException {
         java.io.FileReader fr = new java.io.FileReader(filePath);
         String fileContent = "";
         int i;
@@ -14,12 +14,12 @@ public class FileReader {
 //            System.out.print((char) i);
             fileContent += (char) i;
         }
-        System.out.println(fileContent);
+//        System.out.println(fileContent);
         return fileContent;
     }
 
     public static void main(String[] args) throws IOException {
         FileReader fileReader = new FileReader();
-        fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
+        fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
     }
 }

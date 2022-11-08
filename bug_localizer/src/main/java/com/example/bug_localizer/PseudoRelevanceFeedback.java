@@ -67,7 +67,7 @@ public class PseudoRelevanceFeedback {
     public static void main(String[] args) throws IOException, ParseException {
         PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
         FileReader fileReader = new FileReader();
-        String query = fileReader.readFileFromBugReport("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/38216.txt");
+        String query = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/38216.txt");
 
         List<String> normalizedText = feedback.normalizeText(query);
 
