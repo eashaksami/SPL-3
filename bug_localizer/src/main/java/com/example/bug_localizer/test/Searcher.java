@@ -33,6 +33,11 @@ public class Searcher {
         return indexSearcher.search(query, StaticData.topHitDocs);
     }
 
+    public TopDocs searchNDocs(String searchQuery) throws ParseException, IOException {
+        Query query = queryParser.parse(searchQuery);
+        return indexSearcher.search(query, 1000);
+    }
+
     public static void main(String[] args) throws IOException, ParseException {
         Searcher searcher = new Searcher(StaticData.indexDir);
         String searchQuery = "sami";

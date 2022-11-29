@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class PseudoRelevanceFeedback {
     public List<String> normalizeText(String query) throws IOException {
         TextNormalizerTest textNormalizerTest = new TextNormalizerTest();
-        return textNormalizerTest.removeStopWords(query);
+        return textNormalizerTest.removeStopWords("[Patch] Generics warnings - rawtypes");
     }
 
     public String listToString(List<String> stringList) {

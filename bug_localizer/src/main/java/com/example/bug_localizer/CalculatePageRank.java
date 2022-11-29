@@ -37,7 +37,7 @@ public class CalculatePageRank {
                 }
                 totalIncomingScore = totalIncomingScore*.85;
                 totalIncomingScore += .15;
-                System.out.println(totalIncomingScore);
+//                System.out.println(totalIncomingScore);
 //            prevWeightedVertexArray[i] = totalIncomingScore;
                 if(Math.abs(prevWeightedVertexArray[i] - totalIncomingScore) >= .001) //if significant
                     newWeightedVertexArray[i] = totalIncomingScore;
