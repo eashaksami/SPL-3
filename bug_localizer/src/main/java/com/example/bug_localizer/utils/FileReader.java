@@ -1,6 +1,9 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class FileReader {
 
@@ -16,6 +19,10 @@ public class FileReader {
         }
 //        System.out.println(fileContent);
         return fileContent;
+    }
+
+    public String readMultipartFile(MultipartFile file) throws IOException {
+        return new String(file.getBytes(), StandardCharsets.UTF_8);
     }
 
     public static void main(String[] args) throws IOException {

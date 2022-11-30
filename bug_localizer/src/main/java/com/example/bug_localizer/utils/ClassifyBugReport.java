@@ -1,4 +1,4 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +13,13 @@ public class ClassifyBugReport {
     public boolean haveStackTrace(String bugReport) {
         Pattern p = Pattern.compile("(.*)?(.+)\\.(.+)(\\((.+)\\.java:\\d+\\)|\\(Unknown Source\\)|\\(Native Method\\))");
         Matcher m = p.matcher(bugReport);
-        return m.matches();
+        return m.find();
+    }
+
+    public boolean haveProgramElements(String bugReport) {
+        Pattern p = Pattern.compile("((\\w+)?\\.[\\s\\n\\r]*[\\w]+)[\\s\\n\\r]*(?=\\(.*\\))|([A-Z][a-z0-9]+){2,}");
+        Matcher m = p.matcher(bugReport);
+        return m.find();
     }
 
     public List<String> getAllStackTraces(String bugReport) {
@@ -64,10 +70,11 @@ public class ClassifyBugReport {
     public static void main(String[] args) throws IOException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
+        String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50252.txt");
 
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
-        if(traces != null) {
+        System.out.println(classifyBugReport.haveStackTrace(bugReport));
+        if(traces.size() > 0) {
             System.out.println("Type is ST");
             List<String> classes = classifyBugReport.getAllClassesFromStackTraces(traces);
             List<String> methods = classifyBugReport.getAllMethodsFromStackTraces(traces);

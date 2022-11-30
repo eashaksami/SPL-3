@@ -1,9 +1,11 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils;
 
 import com.example.bug_localizer.staticData.StaticData;
-import com.example.bug_localizer.test.RegexTest;
-import com.example.bug_localizer.test.Searcher;
-import com.example.bug_localizer.test.TextNormalizerTest;
+import com.example.bug_localizer.test.Regex;
+import com.example.bug_localizer.test.TextNormalizer;
+import com.example.bug_localizer.utils.graph.CreateGraphFromNaturalLanguage;
+import com.example.bug_localizer.utils.lucene.Searcher;
+import com.example.bug_localizer.utils.pageRank.CalculatePageRank;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
@@ -39,8 +41,8 @@ public class NaturalLanguageTest {
         System.out.println(methodsAndFieldsList);
 
         List<String> splittedList = new ArrayList<>();
-        RegexTest regexTest = new RegexTest();
-        TextNormalizerTest textNormalizerTest = new TextNormalizerTest();
+        Regex regexTest = new Regex();
+        TextNormalizer textNormalizerTest = new TextNormalizer();
         methodsAndFieldsList.forEach(list -> {
             try {
                 String splittedSentence = textNormalizerTest.removeStopWordsAndJavaKeywords(regexTest.splitCamelCase(list))

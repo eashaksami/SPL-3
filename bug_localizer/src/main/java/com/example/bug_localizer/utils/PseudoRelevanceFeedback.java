@@ -1,9 +1,9 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils;
 
 import com.example.bug_localizer.staticData.StaticData;
-import com.example.bug_localizer.test.AstParserTest;
-import com.example.bug_localizer.test.Searcher;
-import com.example.bug_localizer.test.TextNormalizerTest;
+import com.example.bug_localizer.test.AstParser;
+import com.example.bug_localizer.utils.lucene.Searcher;
+import com.example.bug_localizer.test.TextNormalizer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 public class PseudoRelevanceFeedback {
     public List<String> normalizeText(String query) throws IOException {
-        TextNormalizerTest textNormalizerTest = new TextNormalizerTest();
-        return textNormalizerTest.removeStopWords("[Patch] Generics warnings - rawtypes");
+        TextNormalizer textNormalizer = new TextNormalizer();
+        return textNormalizer.removeStopWords("[Patch] Generics warnings - rawtypes");
     }
 
     public String listToString(List<String> stringList) {
@@ -41,24 +41,24 @@ public class PseudoRelevanceFeedback {
     }
 
     public List<String> getAllMethodNamesFromTopDocuments(List<String> documentsPath) throws IOException {
-        AstParserTest astParserTest = new AstParserTest();
+        AstParser astParser = new AstParser();
         List<String> methodNames = new ArrayList<>();
 
         for (String documentPath: documentsPath) {
-            CompilationUnit cu = astParserTest.getCompilationUnit(documentPath);
-            methodNames.addAll(astParserTest.getAllMethodNames(cu));
+            CompilationUnit cu = astParser.getCompilationUnit(documentPath);
+            methodNames.addAll(astParser.getAllMethodNames(cu));
         }
         System.out.println(methodNames);
         return methodNames;
     }
 
     public List<String> getAllFieldDeclarationsFromTopDocuments(List<String> documentsPath) throws IOException {
-        AstParserTest astParserTest = new AstParserTest();
+        AstParser astParser = new AstParser();
         List<String> fieldDeclarations = new ArrayList<>();
 
         for (String documentPath: documentsPath) {
-            CompilationUnit cu = astParserTest.getCompilationUnit(documentPath);
-            fieldDeclarations.addAll(astParserTest.getAllFieldSignatures(cu));
+            CompilationUnit cu = astParser.getCompilationUnit(documentPath);
+            fieldDeclarations.addAll(astParser.getAllFieldSignatures(cu));
         }
         System.out.println(fieldDeclarations);
         return fieldDeclarations;

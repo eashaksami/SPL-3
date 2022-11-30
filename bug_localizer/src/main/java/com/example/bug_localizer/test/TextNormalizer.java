@@ -11,17 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-public class TextNormalizerTest {
+public class TextNormalizer {
     List<String> javaKeyWords = new ArrayList<>();
     CharArraySet enStopSet;
     List<String> enStopList = new ArrayList<>();
 
-    public TextNormalizerTest() throws IOException {
+    public TextNormalizer() throws IOException {
         try (InputStream in = getClass().getResourceAsStream("/JavaKeywords.txt");
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             Scanner sc = new Scanner(reader);
@@ -71,8 +70,8 @@ public class TextNormalizerTest {
         String processedSentence = "";
         for(String word : splitSentence) {
             processedSentence += word + " ";
-            RegexTest regexTest = new RegexTest();
-            String splited = regexTest.splitCamelCase(word);
+            Regex regex = new Regex();
+            String splited = regex.splitCamelCase(word);
             if(word.length() < splited.length()) {
                 processedSentence += splited + " ";
             }
@@ -104,7 +103,7 @@ public class TextNormalizerTest {
                 "Created attachment 24475 [details]\n" +
                 "Patch to add @deprecated annotations to deprecated elements\n" +
                 "Patch to add @deprecated annotations to deprecated elements";
-        TextNormalizerTest textNormalizerTest = new TextNormalizerTest();
-        textNormalizerTest.removeStopWords(query);
+        TextNormalizer textNormalizer = new TextNormalizer();
+        textNormalizer.removeStopWords(query);
     }
 }

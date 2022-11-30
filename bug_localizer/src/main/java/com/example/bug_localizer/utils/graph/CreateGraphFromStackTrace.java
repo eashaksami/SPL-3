@@ -1,4 +1,7 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils.graph;
+
+import com.example.bug_localizer.utils.ClassifyBugReport;
+import com.example.bug_localizer.utils.FileReader;
 
 import java.io.IOException;
 import java.util.HashMap;

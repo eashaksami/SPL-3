@@ -1,13 +1,13 @@
 package com.example.bug_localizer.test;
 
-import com.example.bug_localizer.FileReader;
+import com.example.bug_localizer.utils.FileReader;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AstParserTest {
+public class AstParser {
 
     List<String> allClassNames = new ArrayList<>();
     List<String> allMethodNames = new ArrayList<>();
@@ -70,16 +70,16 @@ public class AstParserTest {
     }
 
     public static void main(String[] args) throws IOException {
-        AstParserTest astParserTest = new AstParserTest();
+        AstParser astParser = new AstParser();
 
         String filePath = "/home/sami/Desktop/1538.java";
-        CompilationUnit cu = astParserTest.getCompilationUnit(filePath);
+        CompilationUnit cu = astParser.getCompilationUnit(filePath);
 
-        System.out.println(astParserTest.getAllClassNames(cu));
+        System.out.println(astParser.getAllClassNames(cu));
 
-        System.out.println(astParserTest.getAllMethodNames(cu));
+        System.out.println(astParser.getAllMethodNames(cu));
 
-        System.out.println(astParserTest.getAllFieldSignatures(cu));
+        System.out.println(astParser.getAllFieldSignatures(cu));
 
 //        System.out.println(astParserTest.getAllFieldNames1(cu));
     }

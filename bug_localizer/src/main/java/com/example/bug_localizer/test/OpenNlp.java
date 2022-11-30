@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class OpenNlpTest {
+public class OpenNlp {
 
     public Map<String, Set<String>> posTagging(String query) throws IOException {
         SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
@@ -41,8 +41,8 @@ public class OpenNlpTest {
     }
 
     public static void main(String[] args) throws IOException {
-        OpenNlpTest test = new OpenNlpTest();
+        OpenNlp openNlp = new OpenNlp();
         String query = "element reported plain flat element hierarchical java search view";
-        test.posTagging(query);
+        openNlp.posTagging(query);
     }
 }

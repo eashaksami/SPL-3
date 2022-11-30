@@ -1,4 +1,4 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils.pageRank;
 
 import java.io.IOException;
 import java.util.Arrays;

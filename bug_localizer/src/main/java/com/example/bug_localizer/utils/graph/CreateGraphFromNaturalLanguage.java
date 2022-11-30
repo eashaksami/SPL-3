@@ -1,4 +1,4 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils.graph;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package com.example.bug_localizer.test;
+package com.example.bug_localizer.utils.lucene;
 
 import com.example.bug_localizer.staticData.StaticData;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -21,6 +21,7 @@ public class LuceneIndexer {
         Directory indexDirectory = FSDirectory.open(Paths.get(directoryPath));
         StandardAnalyzer analyzer = new StandardAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+        indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         writer = new IndexWriter(indexDirectory, indexWriterConfig);
     }
 
@@ -39,7 +40,7 @@ public class LuceneIndexer {
     }
 
     public void indexFile(File file) throws IOException {
-        System.out.println("Indexing "+ file.getCanonicalPath());
+//        System.out.println("Indexing "+ file.getCanonicalPath());
         Document document = getDocument(file);
         writer.addDocument(document);
     }

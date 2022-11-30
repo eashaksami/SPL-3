@@ -1,4 +1,4 @@
-package com.example.bug_localizer.test;
+package com.example.bug_localizer.utils.lucene;
 
 import com.example.bug_localizer.staticData.StaticData;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;

@@ -1,6 +1,6 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils.graph;
 
-import com.example.bug_localizer.test.OpenNlpTest;
+import com.example.bug_localizer.test.OpenNlp;
 
 import java.io.IOException;
 import java.util.*;
@@ -125,8 +125,8 @@ public class CreateGraphForProgramElement {
     }
 
     public Map<String, Set<String>> getPosTaggedWords(String query) throws IOException {
-        OpenNlpTest test = new OpenNlpTest();
-        return test.posTagging(query);
+        OpenNlp openNlp = new OpenNlp();
+        return openNlp.posTagging(query);
     }
 
     public static void main(String[] args) throws IOException {

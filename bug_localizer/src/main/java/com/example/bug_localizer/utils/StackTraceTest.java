@@ -1,7 +1,9 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils;
 
 import com.example.bug_localizer.staticData.StaticData;
-import com.example.bug_localizer.test.Searcher;
+import com.example.bug_localizer.utils.lucene.Searcher;
+import com.example.bug_localizer.utils.graph.CreateGraphFromStackTrace;
+import com.example.bug_localizer.utils.pageRank.CalculatePageRank;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;

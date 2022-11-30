@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RegexTest {
+public class Regex {
 
     public String splitCamelCase(String camelCase) {
 //        references: https://stackoverflow.com/questions/7593969/regex-to-split-camelcase-or-titlecase-advanced
@@ -18,8 +18,8 @@ public class RegexTest {
     }
 
     public static void main(String[] args) {
-        RegexTest regexTest = new RegexTest();
-        String splited = regexTest.splitCamelCase("NumsAt12345TheStartIncludedToo");
+        Regex regex = new Regex();
+        String splited = regex.splitCamelCase("NumsAt12345TheStartIncludedToo");
         System.out.println(splited);
     }
 }

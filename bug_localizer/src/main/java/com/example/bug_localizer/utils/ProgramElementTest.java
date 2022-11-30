@@ -1,8 +1,10 @@
-package com.example.bug_localizer;
+package com.example.bug_localizer.utils;
 
 import com.example.bug_localizer.staticData.StaticData;
-import com.example.bug_localizer.test.Searcher;
-import com.example.bug_localizer.test.TextNormalizerTest;
+import com.example.bug_localizer.utils.lucene.Searcher;
+import com.example.bug_localizer.test.TextNormalizer;
+import com.example.bug_localizer.utils.graph.CreateGraphForProgramElement;
+import com.example.bug_localizer.utils.pageRank.CalculatePageRank;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
@@ -18,11 +20,11 @@ public class ProgramElementTest {
         FileReader fileReader = new FileReader();
         String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/48239.txt");
 
-        TextNormalizerTest textNormalizerTest = new TextNormalizerTest();
-        String processedBugReport = textNormalizerTest.extractProgramElements(bugReport);
+        TextNormalizer textNormalizer = new TextNormalizer();
+        String processedBugReport = textNormalizer.extractProgramElements(bugReport);
         System.out.println(processedBugReport);
         List<String> sentences = Arrays.stream(processedBugReport.split("\\.")).toList();
-        sentences = textNormalizerTest.removeStopWords(sentences);
+        sentences = textNormalizer.removeStopWords(sentences);
         System.out.println(sentences);
 
         CreateGraphForProgramElement graphForProgramElement = new CreateGraphForProgramElement();

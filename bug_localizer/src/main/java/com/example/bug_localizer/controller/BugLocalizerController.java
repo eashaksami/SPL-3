@@ -4,6 +4,7 @@ import com.example.bug_localizer.model.CloneRepoModel;
 import com.example.bug_localizer.service.BugLocalizationService;
 import com.example.bug_localizer.service.GitCloneService;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,13 +55,13 @@ public class BugLocalizerController {
                 filenames.add(filename);
             }
         }
-        return ResponseEntity.ok().body(bugLocalizationService.getBuggyFiles(DIRECTORY));
+        List<String> response = bugLocalizationService.getBuggyFiles(DIRECTORY, bugReport);
+        FileUtils.deleteDirectory(new File(DIRECTORY));
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping(value = "/clone-repo")
-    public ResponseEntity<String> cloneGitRepo(@RequestBody CloneRepoModel cloneRepoModel,
-                                               @RequestParam("bugReport") MultipartFile bugReport) throws IOException, GitAPIException {
-        System.out.println(bugReport.getOriginalFilename());
+    public ResponseEntity<String> cloneGitRepo(@RequestBody CloneRepoModel cloneRepoModel) throws IOException, GitAPIException {
         gitCloneService.cloneRepository(cloneRepoModel.getRepoLink());
         return ResponseEntity.ok().body("Repo cloned successfully!!!");
     }
