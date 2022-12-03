@@ -28,9 +28,9 @@ public class Searcher {
         queryParser = new QueryParser("contents", new StandardAnalyzer());
     }
 
-    public TopDocs search(String searchQuery) throws ParseException, IOException {
+    public TopDocs search(String searchQuery, int noOfBugReports) throws ParseException, IOException {
         Query query = queryParser.parse(searchQuery);
-        return indexSearcher.search(query, StaticData.topHitDocs);
+        return indexSearcher.search(query, noOfBugReports);
     }
 
     public TopDocs searchNDocs(String searchQuery) throws ParseException, IOException {
@@ -42,7 +42,7 @@ public class Searcher {
         Searcher searcher = new Searcher(StaticData.indexDir);
         String searchQuery = "sami";
 
-        TopDocs hits = searcher.search(searchQuery);
+        TopDocs hits = searcher.search(searchQuery, 10);
         System.out.println(hits.totalHits + " documents found. ");
 
         for(ScoreDoc scoreDoc: hits.scoreDocs) {

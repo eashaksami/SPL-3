@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class BugLocalizationService {
-    public List<String> getStackTraceBuggyFiles(String indexDirectory, String bugReportContent) throws IOException, ParseException {
+    public List<String> getStackTraceBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles) throws IOException, ParseException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         List<String> traces = classifyBugReport.getAllStackTraces(bugReportContent);
 //        System.out.println("Type is ST");
@@ -46,12 +46,12 @@ public class BugLocalizationService {
         String searchQuery = getSearchQuery(pageRanksMap);
         System.out.println(searchQuery.trim());
 
-        List<String> files = getTopDocuments(indexDirectory, searchQuery);
+        List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
 
         return files;
     }
 
-    public List<String> getProgramElementBuggyFiles(String indexDirectory, String bugReportContent) throws IOException, ParseException {
+    public List<String> getProgramElementBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles) throws IOException, ParseException {
         TextNormalizer textNormalizer = new TextNormalizer();
         String processedBugReport = textNormalizer.extractProgramElements(bugReportContent);
         System.out.println(processedBugReport);
@@ -71,12 +71,12 @@ public class BugLocalizationService {
         String searchQuery = getSearchQuery(pageRanksMap);
         System.out.println(searchQuery.trim());
 
-        List<String> files = getTopDocuments(indexDirectory, searchQuery);
+        List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
 
         return files;
     }
 
-    public List<String> getNaturalLanguageBuggyFiles(String indexDirectory, String bugReportContent) throws IOException, ParseException {
+    public List<String> getNaturalLanguageBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles) throws IOException, ParseException {
         PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
         List<String> normalizedText = feedback.normalizeText(bugReportContent);
 
@@ -124,7 +124,7 @@ public class BugLocalizationService {
         String searchQuery = getSearchQuery(pageRanksMap);
         System.out.println(searchQuery.trim());
 
-        List<String> files = getTopDocuments(indexDirectory, searchQuery);
+        List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
 
         return files;
     }
@@ -154,13 +154,16 @@ public class BugLocalizationService {
     }
 
     public String getSearchQuery(Map<String, Double> pageRankMap) {
+        int size = pageRankMap.size();
+        pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size));
+//        System.out.println(pageRankMap);
         return pageRankMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
     }
 
-    public List<String> getTopDocuments(String indexDirectory, String searchQuery) throws IOException, ParseException {
+    public List<String> getTopDocuments(String indexDirectory, String searchQuery, int noOfBuggyFiles) throws IOException, ParseException {
         Searcher searcher = new Searcher(indexDirectory);
 
-        TopDocs hits = searcher.searchNDocs(searchQuery);
+        TopDocs hits = searcher.search(searchQuery, noOfBuggyFiles);
 
         System.out.println(hits.totalHits + " documents found. ");
         int i = 0;
@@ -185,7 +188,7 @@ public class BugLocalizationService {
         return indexDirectory;
     }
 
-    public List<String> getBuggyFiles(String directory, MultipartFile bugReport) throws IOException, ParseException {
+    public List<String> getBuggyFiles(String directory, MultipartFile bugReport, int noOfBuggyFiles) throws IOException, ParseException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         FileReader fileReader = new FileReader();
         String bugReportContent = fileReader.readMultipartFile(bugReport);
@@ -193,11 +196,11 @@ public class BugLocalizationService {
         String indexDirectory = createLuceneIndexDirectory(directory);
 
         if(classifyBugReport.haveStackTrace(bugReportContent)) {
-            return getStackTraceBuggyFiles(indexDirectory, bugReportContent);
+            return getStackTraceBuggyFiles(indexDirectory, bugReportContent, noOfBuggyFiles);
         } else if(classifyBugReport.haveProgramElements(bugReportContent)) {
-            return getProgramElementBuggyFiles(indexDirectory, bugReportContent);
+            return getProgramElementBuggyFiles(indexDirectory, bugReportContent, noOfBuggyFiles);
         } else {
-            return getNaturalLanguageBuggyFiles(indexDirectory, bugReportContent);
+            return getNaturalLanguageBuggyFiles(indexDirectory, bugReportContent, noOfBuggyFiles);
         }
     }
 }

@@ -70,7 +70,7 @@ public class ClassifyBugReport {
     public static void main(String[] args) throws IOException {
         ClassifyBugReport classifyBugReport = new ClassifyBugReport();
         FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50252.txt");
+        String bugReport = fileReader.readFile("/home/sami/Desktop/33100.txt");
 
         List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
         System.out.println(classifyBugReport.haveStackTrace(bugReport));

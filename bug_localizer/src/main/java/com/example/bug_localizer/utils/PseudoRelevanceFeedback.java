@@ -29,7 +29,7 @@ public class PseudoRelevanceFeedback {
         Searcher searcher = new Searcher(StaticData.indexDir);
         List<String> topDocumentsPath = new ArrayList<>();
 
-        TopDocs hits = searcher.search(baselineQuery);
+        TopDocs hits = searcher.search(baselineQuery, 10);
         System.out.println(hits.totalHits + " documents found. ");
 
         for(ScoreDoc scoreDoc: hits.scoreDocs) {

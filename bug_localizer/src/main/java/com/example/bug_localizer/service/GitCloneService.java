@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class GitCloneService {
-    public void cloneRepository(String repoLink) throws GitAPIException, IOException {
+    public static final String DIRECTORY = System.getProperty("user.home") + "/Downloads/";
+    public String cloneRepository(String repoLink) throws GitAPIException, IOException {
 
         File dir = createTempDirectory();
 
@@ -30,14 +31,15 @@ public class GitCloneService {
         }
 
         printAllFileList(dir.getAbsolutePath());
+        return DIRECTORY+ "Git Repo";
     }
 
     public File createTempDirectory() {
         String workingDirPath = "/home/sami/Desktop/SPL-3/Temp";
 
-        File workingDirectory = new File(workingDirPath);
+        File workingDirectory = new File(DIRECTORY);
 
-        File dir = new File(workingDirectory, "newDir");
+        File dir = new File(DIRECTORY, "Git Repo");
         dir.mkdirs();
 
         return dir;

@@ -77,12 +77,15 @@ public class NaturalLanguageTest {
                         (e1, e2) -> e1, LinkedHashMap::new));
         pageRanksMap.keySet().removeIf(Objects::isNull);
         System.out.println(pageRanksMap);
+        int size = pageRanksMap.size();
+        pageRanksMap.keySet().removeAll(Arrays.asList(pageRanksMap.keySet().toArray()).subList(10, size));
+        System.out.println(pageRanksMap);
         String searchQuery = pageRanksMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
         System.out.println(searchQuery.trim());
 
         Searcher searcher = new Searcher(StaticData.indexDir);
 
-        TopDocs hits = searcher.search(searchQuery);
+        TopDocs hits = searcher.search(searchQuery, 30);
         System.out.println(hits.totalHits + " documents found. ");
 
         for(ScoreDoc scoreDoc: hits.scoreDocs) {

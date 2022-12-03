@@ -93,7 +93,9 @@ public class CreateGraphForProgramElement {
 //                    System.out.println(entry.getKey());
                     }
                 }
-                graph[sourceNodeIndex][destinationNodeIndex] = 1;
+                if(sourceNodeIndex != null && destinationNodeIndex != null) {
+                    graph[sourceNodeIndex][destinationNodeIndex] = 1;
+                }
             }
         }
         return graph;

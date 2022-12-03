@@ -42,9 +42,10 @@ public class BugLocalizerController {
                                                     @RequestParam("bugReport") MultipartFile bugReport,
                                                     @RequestParam("noOfBuggyFiles") String noOfBuggyFiles) throws IOException, ParseException {
         List<String> filenames = new ArrayList<>();
-        System.out.println(multipartFiles);
-        System.out.println(bugReport.getOriginalFilename());
-        System.out.println(bugReport);
+        System.out.println("file received");
+//        System.out.println(multipartFiles);
+//        System.out.println(bugReport.getOriginalFilename());
+//        System.out.println(bugReport);
         System.out.println(noOfBuggyFiles);
         for(MultipartFile file : multipartFiles) {
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -55,14 +56,16 @@ public class BugLocalizerController {
                 filenames.add(filename);
             }
         }
-        List<String> response = bugLocalizationService.getBuggyFiles(DIRECTORY, bugReport);
+        int noOfBugReport = Integer.parseInt(noOfBuggyFiles);
+        System.out.println("function call");
+        List<String> response = bugLocalizationService.getBuggyFiles(DIRECTORY, bugReport, noOfBugReport);
         FileUtils.deleteDirectory(new File(DIRECTORY));
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping(value = "/clone-repo")
-    public ResponseEntity<String> cloneGitRepo(@RequestBody CloneRepoModel cloneRepoModel) throws IOException, GitAPIException {
-        gitCloneService.cloneRepository(cloneRepoModel.getRepoLink());
-        return ResponseEntity.ok().body("Repo cloned successfully!!!");
+    public ResponseEntity<String> cloneGitRepo(@RequestParam("gitRepoLink") String gitRepoLink) throws IOException, GitAPIException {
+        String gitRepoLocation = gitCloneService.cloneRepository(gitRepoLink);
+        return ResponseEntity.ok().body(gitRepoLocation);
     }
 }
