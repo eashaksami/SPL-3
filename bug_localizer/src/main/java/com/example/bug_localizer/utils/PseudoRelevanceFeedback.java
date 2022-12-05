@@ -16,12 +16,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PseudoRelevanceFeedback {
-    public List<String> getBugReportTitle(String bugReport) {
+    public String getNormalizedBugReportTitle(String bugReport) throws IOException {
+        TextNormalizer normalizer = new TextNormalizer();
+        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
         List<String> title = new ArrayList<>();
         String[] lines = bugReport.split("\\r?\\n");
         title.add(lines[0]);
-        return title;
+        title = normalizer.removeStopWords(lines[0]);
+        return feedback.listToString(title);
     }
+
+    public String removeSpecialCharacterFromTitle(String bugReport) throws IOException {
+        TextNormalizer normalizer = new TextNormalizer();
+        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
+        List<String> title = new ArrayList<>();
+        String[] lines = bugReport.split("\\r?\\n");
+        title.add(lines[0]);
+        title = normalizer.removeStopWords(lines[0]);
+        String result = lines[0].replaceAll("[^a-zA-Z]", "");
+        return result;
+    }
+
     public List<String> normalizeText(String query) throws IOException {
         TextNormalizer textNormalizer = new TextNormalizer();
         return textNormalizer.removeStopWords(query);
@@ -76,7 +91,7 @@ public class PseudoRelevanceFeedback {
         String query = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/38216.txt");
 
         List<String> normalizedText = feedback.normalizeText(query);
-
+        System.out.println("query: " + feedback.getNormalizedBugReportTitle(query));
         String baselineQuery = feedback.listToString(normalizedText);
         System.out.println(baselineQuery);
         List<String> topDocumentsPath = feedback.getTopDocsFromBaselineQuery(baselineQuery);

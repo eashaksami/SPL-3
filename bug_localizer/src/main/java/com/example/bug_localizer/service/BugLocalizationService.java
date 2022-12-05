@@ -43,7 +43,7 @@ public class BugLocalizationService {
         Map<String, Double> pageRanksMap = getPageRankMap(traceGraph, tracesMap);
 
         System.out.println(pageRanksMap);
-        String searchQuery = getSearchQuery(pageRanksMap);
+        String searchQuery = getSearchQuery(pageRanksMap, "ST", bugReportContent);
         System.out.println(searchQuery.trim());
 
         List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
@@ -68,7 +68,7 @@ public class BugLocalizationService {
         Map<String, Double> pageRanksMap = getPageRankMap(graph, wordMap);
 
         System.out.println(pageRanksMap);
-        String searchQuery = getSearchQuery(pageRanksMap);
+        String searchQuery = getSearchQuery(pageRanksMap, "PE", bugReportContent);
         System.out.println(searchQuery.trim());
 
         List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
@@ -121,7 +121,7 @@ public class BugLocalizationService {
         Map<String, Double> pageRanksMap = getPageRankMap(naturalLanguageGraph, naturalLanguageMap);
 
         System.out.println(pageRanksMap);
-        String searchQuery = getSearchQuery(pageRanksMap);
+        String searchQuery = getSearchQuery(pageRanksMap, "NL", bugReportContent);
         System.out.println(searchQuery.trim());
 
         List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
@@ -153,11 +153,31 @@ public class BugLocalizationService {
         return pageRankMap;
     }
 
-    public String getSearchQuery(Map<String, Double> pageRankMap) {
+    public String getSearchQuery(Map<String, Double> pageRankMap, String reportType, String bugReport) {
         int size = pageRankMap.size();
-        pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size));
+        if(reportType.equals("ST")) {
+            if(size > 10) {
+                pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size));
+            }
+        } else if(reportType.equals("PE")) {
+            if(size > 20) {
+                pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size));
+            }
+        } else {
+            if(size > 15) {
+                pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(15, size));
+            }
+        }
 //        System.out.println(pageRankMap);
-        return pageRankMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+        String searchQuery = null;
+        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
+        try {
+            searchQuery = feedback.getNormalizedBugReportTitle(bugReport);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        searchQuery += " " + pageRankMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+        return searchQuery;
     }
 
     public List<String> getTopDocuments(String indexDirectory, String searchQuery, int noOfBuggyFiles) throws IOException, ParseException {

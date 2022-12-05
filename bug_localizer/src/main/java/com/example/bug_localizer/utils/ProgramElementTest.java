@@ -87,7 +87,15 @@ public class ProgramElementTest {
                 pageRanksMap.keySet().removeAll(Arrays.asList(pageRanksMap.keySet().toArray()).subList(10, size));
             }
             System.out.println(pageRanksMap);
-            String searchQuery = pageRanksMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+
+            PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
+            String searchQuery = null;
+            try {
+                searchQuery = feedback.getNormalizedBugReportTitle(bugReport);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            searchQuery += " " +  pageRanksMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
             System.out.println(searchQuery.trim());
 
             Searcher searcher = null;

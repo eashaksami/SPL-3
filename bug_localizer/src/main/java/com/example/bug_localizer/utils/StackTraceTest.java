@@ -20,10 +20,10 @@ public class StackTraceTest {
     public static void main(String[] args) throws IOException, ParseException {
         FileReader fileReader = new FileReader();
         ResultValidation validation = new ResultValidation();
-        String bugIdsReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BLIZZARD/Result-Matched-Indices/ecf/proposed-ST.txt");
+        String bugIdsReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BLIZZARD/Result-Matched-Indices/tomcat70/proposed-ST.txt");
         List<String> bugIds = validation.getAllBugsIdOfBugType(bugIdsReport);
 
-        String fileContent = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/Lucene-Index2File-Mapping/ecf.ckeys");
+        String fileContent = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/Lucene-Index2File-Mapping/tomcat70.ckeys");
         Map<String, String> fileNoAndNameMap = validation.getFileNameAndNumber(fileContent);
 
         File resultMap = new File("stack_trace.txt");
@@ -33,7 +33,7 @@ public class StackTraceTest {
             ClassifyBugReport classifyBugReport = new ClassifyBugReport();
             String bugReport = null;
             try {
-                String bugReportLocation = "/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/ecf/" + bugId + ".txt";
+                String bugReportLocation = "/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/" + bugId + ".txt";
                 bugReport = fileReader.readFile(bugReportLocation);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -72,7 +72,16 @@ public class StackTraceTest {
                 pageRanksMap.keySet().removeAll(Arrays.asList(pageRanksMap.keySet().toArray()).subList(10, size));
             }
             System.out.println(pageRanksMap);
-            String searchQuery = pageRanksMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+
+            PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
+            String searchQuery = null;
+            try {
+                searchQuery = feedback.getNormalizedBugReportTitle(bugReport);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            searchQuery += " " + pageRanksMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+
             System.out.println(searchQuery.trim());
 
             Searcher searcher = null;
@@ -94,7 +103,7 @@ public class StackTraceTest {
 
             String changedFilesContent = null;
             try {
-                String changedFileContentPath = "/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/Goldset/ecf/" + bugId + ".txt";
+                String changedFileContentPath = "/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/Goldset/tomcat70/" + bugId + ".txt";
                 changedFilesContent = fileReader.readFile(changedFileContentPath);
             } catch (IOException e) {
                 throw new RuntimeException(e);
