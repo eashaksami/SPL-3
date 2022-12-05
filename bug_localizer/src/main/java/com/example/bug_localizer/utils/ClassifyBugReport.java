@@ -39,7 +39,10 @@ public class ClassifyBugReport {
         List<String> classes = new ArrayList<>();
         traces.forEach(t -> {
             List<String> splits = Arrays.stream(t.split("\\.")).toList();
-            String className = splits.get(splits.size()-2);
+            String className = null;
+            if(splits.size() >= 2){
+                className = splits.get(splits.size()-2);
+            }
             classes.add(className);
         });
         List<String> uniqueClasses = classes.stream().distinct().collect(Collectors.toList());
@@ -64,7 +67,11 @@ public class ClassifyBugReport {
 
     public String getClassFromStackTrace(String traces) {
         List<String> splits = Arrays.stream(traces.split("\\.")).toList();
-        return splits.get(splits.size()-2);
+        String className = null;
+        if(splits.size() >= 2){
+            className = splits.get(splits.size()-2);
+        }
+        return className;
     }
 
     public static void main(String[] args) throws IOException {

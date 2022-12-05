@@ -16,9 +16,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PseudoRelevanceFeedback {
+    public List<String> getBugReportTitle(String bugReport) {
+        List<String> title = new ArrayList<>();
+        String[] lines = bugReport.split("\\r?\\n");
+        title.add(lines[0]);
+        return title;
+    }
     public List<String> normalizeText(String query) throws IOException {
         TextNormalizer textNormalizer = new TextNormalizer();
-        return textNormalizer.removeStopWords("[Patch] Generics warnings - rawtypes");
+        return textNormalizer.removeStopWords(query);
     }
 
     public String listToString(List<String> stringList) {

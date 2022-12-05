@@ -36,10 +36,10 @@ public class CreateGraphFromNaturalLanguage {
 //                    System.out.println(entry.getKey());
                     }
                 }
-                if(previousWord != null) {
+                if(previousWord != null && previousWordIndex != null) {
                     graph[currentWordIndex][previousWordIndex] = 1;
                 }
-                if(nextWord != null) {
+                if(nextWord != null && nextWordIndex != null) {
                     graph[currentWordIndex][nextWordIndex] = 1;
                 }
             }

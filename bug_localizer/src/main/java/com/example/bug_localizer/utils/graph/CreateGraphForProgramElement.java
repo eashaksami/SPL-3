@@ -40,15 +40,15 @@ public class CreateGraphForProgramElement {
 //                    System.out.println(entry.getKey());
                     }
                 }
-                if(previousWord != null) {
+                if(previousWord != null && previousWordIndex != null) {
                     graph[currentWordIndex][previousWordIndex] = 1;
                 }
-                if(nextWord != null) {
+                if(nextWord != null && nextWordIndex != null) {
                     graph[currentWordIndex][nextWordIndex] = 1;
                 }
             }
 //        }
-        printTraceGraph(graph, wordMap);
+//        printTraceGraph(graph, wordMap);
         return graph;
     }
 
@@ -134,11 +134,7 @@ public class CreateGraphForProgramElement {
     public static void main(String[] args) throws IOException {
         CreateGraphForProgramElement graphForProgramElement = new CreateGraphForProgramElement();
         List<String> sentences = new ArrayList<>();
-//        sentences.add("element reported plain flat element hierarchical java search view");
-        sentences
-                .add("Closing the ECF Buddy List view cause chat room disconnect");
-        sentences
-                .add("If you close the ECF Buddy List view, and then try and type in a chat room you were connected to the following errors are thrown");
+        sentences.add("element reported plain flat element hierarchical java search view");
 
         Map<Integer, String> wordMap = graphForProgramElement.representStringToMap(sentences);
         int graph[][] = new int[wordMap.size()][wordMap.size()];

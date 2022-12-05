@@ -25,11 +25,11 @@ public class CreateGraphFromStackTrace {
             Integer classIndex=0, methodIndex=0;
 
             for (Map.Entry<Integer, String> entry : tracesMap.entrySet()) {
-                if (entry.getValue().equals(className)) {
+                if (entry.getValue() != null && entry.getValue().equals(className)) {
                     classIndex = entry.getKey();
 //                    System.out.println(entry.getKey());
                 }
-                if (entry.getValue().equals(methodName)) {
+                if (entry.getValue() != null && entry.getValue().equals(methodName)) {
                     methodIndex = entry.getKey();
 //                    System.out.println(entry.getKey());
                 }
