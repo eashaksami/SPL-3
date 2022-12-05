@@ -116,10 +116,18 @@ public class CreateGraphForProgramElement {
             }
             graph = representGraphAsMatrix(nouns, wordMap, graph);
             graph = representGraphAsMatrix(verbs, wordMap, graph);
+//            graph = representGraphAsMatrix(adjectives, wordMap, graph);
+            graph = representGraphAsMatrix(adverbs, wordMap, graph);
 
             graph = createGraphWithHierarchicalLink(graph, wordMap, verbs, nouns);
             graph = createGraphWithHierarchicalLink(graph, wordMap, verbs, adjectives);
             graph = createGraphWithHierarchicalLink(graph, wordMap, adverbs, verbs);
+
+//            graph = createGraphWithHierarchicalLink(graph, wordMap, adjectives, verbs);
+            graph = createGraphWithHierarchicalLink(graph, wordMap, adjectives, nouns);
+//            graph = createGraphWithHierarchicalLink(graph, wordMap, adverbs, nouns);
+            graph = createGraphWithHierarchicalLink(graph, wordMap, adverbs, adjectives);
+
         }
         System.out.println("Final graph======>");
         printTraceGraph(graph, wordMap);
