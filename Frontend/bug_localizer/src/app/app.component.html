@@ -1,0 +1,125 @@
+<div class="container">
+  <div class="panel panel-default">
+    <div class="panel-heading" >
+      <h4>Bug Localizer</h4>
+    </div><br>
+    <div class="panel-body">   
+      <mat-radio-group aria-label="Select an option">
+        <mat-radio-button value="1" checked (click)="isFolderLocationSelected()">Upload File</mat-radio-button>
+        <!-- <mat-radio-button style="margin-left: 20px;" value="2" (click)="isGitRipoSelected()">Clone Git Ripo</mat-radio-button> -->
+        <mat-radio-button style="margin-left: 20px;" value="3" (click)="getBugReport()">GitHub Issue</mat-radio-button>
+      </mat-radio-group>
+      
+
+      <div class="input-group" *ngIf="gitIssueGenerate" style="margin-top: 20px;">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Git Issue Link</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter Git Issue Link"
+        aria-describedby="basic-addon2"
+        style="border-color: #0275d8; box-shadow: 0 0 10px #0275d8;"
+        [(ngModel)]="gitIssueLink">
+      </div>
+      <a
+      *ngIf="gitIssueGenerate" 
+      class="btn btn-success mt-3" (click)="downloadBugReport()">
+        Get Bug Report
+      </a>
+  
+      <div class="form-group" *ngIf="gitIssueGenerate && bugReportReceived"
+       style="margin-top: 20px;">
+        <label for="exampleFormControlTextarea3">Bug Report</label>
+        <textarea class="form-control" id="exampleFormControlTextarea3" rows="7">{{content}}</textarea>
+      </div>
+      <a [href]="fileUrl" *ngIf="gitIssueGenerate && bugReportReceived"
+       class="btn btn-success mt-3" [download]="fileName">
+        Download Bug Report
+      </a>
+
+      <br *ngIf="processStarted">
+      <form enctype="multipart/form-data" *ngIf="folderLocationSelected" style="margin-top: 20px;">
+        <fieldset style="margin-bottom: 40px;">
+          <div class="form-group">
+            <div>
+              <label><strong>Enter Folder Location</strong></label>
+              <input type="file" 
+              webkitdirectory
+              multiple
+              (change)="onUploadFiles($event.target.files)" name="files" multiple class="form-control" />
+            </div>
+            <br>
+            <label><strong>Bug Report</strong></label>
+            <div>
+              <input type="file"
+              (change)="onUploadBugReport($event)" class="form-control" />
+            </div>
+          </div>
+          <label><strong>No Of Buggy Files</strong></label>
+          <select class="form-control" id="exampleFormControlSelect1" (change)="noOfBuggyFiles($event.target.value)">
+            <option selected="selected" disabled>-- options --</option>  
+            <option *ngFor="let value of values" [value]="value">{{ value }} </option>
+          </select>
+          <div>
+            <button class="btn btn-success mt-3" (click)="localizeBug()">Localize Bug</button>
+          </div>
+        </fieldset>
+      </form>
+      <!-- <br *ngIf="processStarted"> -->
+      <label *ngIf="processStarted"><strong>Getting Buggy Files...</strong></label>
+      <mat-progress-bar *ngIf="processStarted" mode="indeterminate"></mat-progress-bar><br>
+
+      <!-- <div class="input-group" *ngIf="gitRepoSelected"  style="margin-top: 20px;">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Repo Location</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter Repo Location"
+        aria-describedby="basic-addon2"
+        style="border-color: #0275d8; box-shadow: 0 0 10px #0275d8;"
+        [(ngModel)]="gitRepoLocation">
+      </div>
+      <button *ngIf="gitRepoSelected" class="btn btn-success mt-3" (click)="saveChanges()">
+        Clone Repo
+      </button> -->
+      
+      <br>
+      <lable *ngIf="completeCloneRepo">Repo cloned at location {{ gitLocalFileLocation }}</lable>
+      
+      <div *ngIf="filenames?.length > 0" class="js-upload-finished">
+        <h3>Processed files</h3>
+        <div *ngFor="let filename of filenames" class="list-group">
+          <a (click)="onDownloadFile(filename)" class="list-group-item list-group-item-success" style="cursor: pointer;">
+            {{ filename }}            
+            <a class="alert-success float-right">Download</a>
+          </a><br>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- <app-issue-table></app-issue-table> -->
+  <!-- table to show bugs -->
+  <label *ngIf="getFilesFromServer && folderLocationSelected"><strong>List of Buggy Files</strong></label>
+  <div class="mat-elevation-z8" *ngIf="getFilesFromServer && folderLocationSelected"
+  style="margin-top: 10px;">
+    <table mat-table [dataSource]="dataSource">
+  
+      <!-- Position Column -->
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef><b> Rank No. </b></th>
+        <td mat-cell *matCellDef="let element"> {{element.no}} </td>
+      </ng-container>
+  
+      <!-- Weight Column -->
+      <ng-container matColumnDef="fileName">
+        <th mat-header-cell *matHeaderCellDef><b> File Name </b></th>
+        <td mat-cell *matCellDef="let element"> {{element.fileName}} </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  </div>
+<br><br><br>
+</div>
+<div>
