@@ -27,65 +27,77 @@ import java.util.stream.Collectors;
 
 @Service
 public class BugLocalizationService {
-    public List<String> getStackTraceBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles) throws IOException, ParseException {
-        ClassifyBugReport classifyBugReport = new ClassifyBugReport();
+
+    private final ClassifyBugReport classifyBugReport;
+    private final FileReader fileReader;
+    private final CreateGraphFromStackTrace createGraphFromStackTrace;
+    private final CreateGraphForProgramElement createGraphForProgramElement;
+    private final PseudoRelevanceFeedback pseudoRelevanceFeedback;
+    private final CreateGraphFromNaturalLanguage createGraphFromNaturalLanguage;
+    private final CalculatePageRank calculatePageRank;
+    private BugLocalizationService(ClassifyBugReport classifyBugReport,
+                                   FileReader fileReader,
+                                   CreateGraphFromStackTrace createGraphFromStackTrace,
+                                   CreateGraphForProgramElement createGraphForProgramElement,
+                                   PseudoRelevanceFeedback pseudoRelevanceFeedback,
+                                   CreateGraphFromNaturalLanguage createGraphFromNaturalLanguage,
+                                   CalculatePageRank calculatePageRank) {
+        this.classifyBugReport = classifyBugReport;
+        this.fileReader = fileReader;
+        this.createGraphFromStackTrace = createGraphFromStackTrace;
+        this.createGraphForProgramElement = createGraphForProgramElement;
+        this.pseudoRelevanceFeedback = pseudoRelevanceFeedback;
+        this.createGraphFromNaturalLanguage = createGraphFromNaturalLanguage;
+        this.calculatePageRank = calculatePageRank;
+    }
+
+    public List<String> getStackTraceBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles)
+            throws IOException, ParseException {
         List<String> traces = classifyBugReport.getAllStackTraces(bugReportContent);
-//        System.out.println("Type is ST");
+
         List<String> classes = classifyBugReport.getAllClassesFromStackTraces(traces);
         List<String> methods = classifyBugReport.getAllMethodsFromStackTraces(traces);
-        System.out.println(classes);
-        System.out.println(methods);
-        CreateGraphFromStackTrace stackTraceGraph = new CreateGraphFromStackTrace();
 
-        Map<Integer, String> tracesMap = stackTraceGraph.representStringToMap(classes, methods);
-        int[][] traceGraph = stackTraceGraph.representGraphAsMatrix(traces, tracesMap);
-//        System.out.println(traceGraph);
+        Map<Integer, String> tracesMap = createGraphFromStackTrace.representStringToMap(classes, methods);
+        int[][] traceGraph = createGraphFromStackTrace.representGraphAsMatrix(traces, tracesMap);
+
         Map<String, Double> pageRanksMap = getPageRankMap(traceGraph, tracesMap);
 
-        System.out.println(pageRanksMap);
         String searchQuery = getSearchQuery(pageRanksMap, "ST", bugReportContent);
         System.out.println(searchQuery.trim());
 
-        List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
-
-        return files;
+        return getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
     }
 
     public List<String> getProgramElementBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles) throws IOException, ParseException {
         TextNormalizer textNormalizer = new TextNormalizer();
         String processedBugReport = textNormalizer.extractProgramElements(bugReportContent);
-        System.out.println(processedBugReport);
         List<String> sentences = Arrays.stream(processedBugReport.split("\\.")).toList();
         sentences = textNormalizer.removeStopWords(sentences);
-        System.out.println(sentences);
 
-        CreateGraphForProgramElement graphForProgramElement = new CreateGraphForProgramElement();
-        Map<Integer, String> wordMap = graphForProgramElement.representStringToMap(sentences);
-        int graph[][] = new int[wordMap.size()][wordMap.size()];
-        System.out.println(wordMap);
-        graph = graphForProgramElement.createPosGraph(sentences, wordMap, graph);
+        Map<Integer, String> wordMap = createGraphForProgramElement.representStringToMap(sentences);
+        int[][] graph = new int[wordMap.size()][wordMap.size()];
+
+        graph = createGraphForProgramElement.createPosGraph(sentences, wordMap, graph);
 
         Map<String, Double> pageRanksMap = getPageRankMap(graph, wordMap);
 
-        System.out.println(pageRanksMap);
         String searchQuery = getSearchQuery(pageRanksMap, "PE", bugReportContent);
         System.out.println(searchQuery.trim());
 
-        List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
-
-        return files;
+        return getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
     }
 
-    public List<String> getNaturalLanguageBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles) throws IOException, ParseException {
-        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
-        List<String> normalizedText = feedback.normalizeText(bugReportContent);
+    public List<String> getNaturalLanguageBuggyFiles(String indexDirectory, String bugReportContent, int noOfBuggyFiles)
+            throws IOException, ParseException {
+        List<String> normalizedText = pseudoRelevanceFeedback.normalizeText(bugReportContent);
 
-        String baselineQuery = feedback.listToString(normalizedText);
-        System.out.println(baselineQuery);
-        List<String> topDocumentsPath = feedback.getTopDocsFromBaselineQuery(baselineQuery);
+        String baselineQuery = pseudoRelevanceFeedback.listToString(normalizedText);
 
-        List<String> methodDeclarations = feedback.getAllMethodNamesFromTopDocuments(topDocumentsPath);
-        List<String> fieldDeclarations = feedback.getAllFieldDeclarationsFromTopDocuments(topDocumentsPath);
+        List<String> topDocumentsPath = pseudoRelevanceFeedback.getTopDocsFromBaselineQuery(baselineQuery);
+
+        List<String> methodDeclarations = pseudoRelevanceFeedback.getAllMethodNamesFromTopDocuments(topDocumentsPath);
+        List<String> fieldDeclarations = pseudoRelevanceFeedback.getAllFieldDeclarationsFromTopDocuments(topDocumentsPath);
 
         Set<String> methodsAndFieldsList = new HashSet<>();
         methodsAndFieldsList.addAll(methodDeclarations);
@@ -93,11 +105,6 @@ public class BugLocalizationService {
          * if add field declarations then it adds extra noise which decrease the result accuracy
          * */
 //        methodsAndFieldsList.addAll(fieldDeclarations);
-
-        System.out.println(methodDeclarations.size());
-        System.out.println(fieldDeclarations.size());
-        System.out.println(methodsAndFieldsList.size());
-        System.out.println(methodsAndFieldsList);
 
         List<String> splittedList = new ArrayList<>();
         Regex regex = new Regex();
@@ -111,31 +118,24 @@ public class BugLocalizationService {
                 throw new RuntimeException(e);
             }
         });
-        System.out.println(splittedList);
 
-        CreateGraphFromNaturalLanguage graphFromNaturalLanguage = new CreateGraphFromNaturalLanguage();
-        Map<Integer, String> naturalLanguageMap = graphFromNaturalLanguage.representStringToMap(splittedList);
-        int[][] naturalLanguageGraph = graphFromNaturalLanguage.representGraphAsMatrix(splittedList, naturalLanguageMap);
-        graphFromNaturalLanguage.printTraceGraph(naturalLanguageGraph, naturalLanguageMap);
+        Map<Integer, String> naturalLanguageMap = createGraphFromNaturalLanguage.representStringToMap(splittedList);
+        int[][] naturalLanguageGraph = createGraphFromNaturalLanguage.representGraphAsMatrix(splittedList, naturalLanguageMap);
+        createGraphFromNaturalLanguage.printTraceGraph(naturalLanguageGraph, naturalLanguageMap);
 
         Map<String, Double> pageRanksMap = getPageRankMap(naturalLanguageGraph, naturalLanguageMap);
 
-        System.out.println(pageRanksMap);
         String searchQuery = getSearchQuery(pageRanksMap, "NL", bugReportContent);
         System.out.println(searchQuery.trim());
 
-        List<String> files = getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
-
-        return files;
+        return getTopDocuments(indexDirectory, searchQuery, noOfBuggyFiles);
     }
 
     public Map<String, Double> getPageRankMap(int[][] graph, Map<Integer, String> stringMap) {
-        CalculatePageRank calculatePageRank = new CalculatePageRank();
         double [] pageRanks = calculatePageRank.pageRank(graph);
         Map<String, Double> pageRanksMap = new HashMap<>();
         for (int i = 0; i < pageRanks.length; i++) {
             pageRanksMap.put(stringMap.get(i), pageRanks[i]);
-            System.out.println("Page Rank at: " + stringMap.get(i) + " "+pageRanks[i]);
         }
         pageRanksMap = sortPageRankMap(pageRanksMap);
         return pageRanksMap;
@@ -157,26 +157,26 @@ public class BugLocalizationService {
         int size = pageRankMap.size();
         if(reportType.equals("ST")) {
             if(size > 10) {
-                pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size));
+                Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size).forEach(pageRankMap.keySet()::remove);
             }
         } else if(reportType.equals("PE")) {
             if(size > 20) {
-                pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size));
+                Arrays.asList(pageRankMap.keySet().toArray()).subList(10, size).forEach(pageRankMap.keySet()::remove);
             }
         } else {
             if(size > 15) {
-                pageRankMap.keySet().removeAll(Arrays.asList(pageRankMap.keySet().toArray()).subList(15, size));
+                Arrays.asList(pageRankMap.keySet().toArray()).subList(15, size).forEach(pageRankMap.keySet()::remove);
             }
         }
-//        System.out.println(pageRankMap);
-        String searchQuery = null;
-        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
+
+        String searchQuery = "";
+
         try {
-            searchQuery = feedback.getNormalizedBugReportTitle(bugReport);
+            searchQuery = pseudoRelevanceFeedback.getNormalizedBugReportTitle(bugReport);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        searchQuery += " " + pageRankMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+        searchQuery += " " + String.join(" ", pageRankMap.keySet());
         return searchQuery;
     }
 
@@ -191,7 +191,6 @@ public class BugLocalizationService {
         for(ScoreDoc scoreDoc: hits.scoreDocs) {
             Document document = Searcher.indexSearcher.doc(scoreDoc.doc);
             files.add(document.get("filepath"));
-            System.out.println("File: " +i + " " + document.get("filepath") + "Score: " + scoreDoc.score);
             i++;
         }
         return files;
@@ -199,18 +198,17 @@ public class BugLocalizationService {
 
     public String createLuceneIndexDirectory(String directory) throws IOException {
         Files.createDirectories(Paths.get(directory + "/index"));
-        System.out.println("Start index creation");
+
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         String indexDirectory = directory + "/index_" + timeStamp;
         LuceneIndexer luceneIndexer = new LuceneIndexer(indexDirectory);
         luceneIndexer.createIndex(directory);
-        System.out.println("End index creation");
+
         return indexDirectory;
     }
 
-    public List<String> getBuggyFiles(String directory, MultipartFile bugReport, int noOfBuggyFiles) throws IOException, ParseException {
-        ClassifyBugReport classifyBugReport = new ClassifyBugReport();
-        FileReader fileReader = new FileReader();
+    public List<String> getBuggyFiles(String directory, MultipartFile bugReport, int noOfBuggyFiles)
+            throws IOException, ParseException {
         String bugReportContent = fileReader.readMultipartFile(bugReport);
 
         String indexDirectory = createLuceneIndexDirectory(directory);

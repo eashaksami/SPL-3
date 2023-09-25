@@ -1,10 +1,12 @@
 package com.example.bug_localizer.utils;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+@Component
 public class FileReader {
 
     public String readFile(String filePath) throws IOException {
@@ -23,10 +25,5 @@ public class FileReader {
 
     public String readMultipartFile(MultipartFile file) throws IOException {
         return new String(file.getBytes(), StandardCharsets.UTF_8);
-    }
-
-    public static void main(String[] args) throws IOException {
-        FileReader fileReader = new FileReader();
-        fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/eclipse.jdt.core/46084.txt");
     }
 }

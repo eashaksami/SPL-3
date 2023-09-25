@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class GitCloneService {
     public static final String DIRECTORY = System.getProperty("user.home") + "/Downloads/";
+
     public String cloneRepository(String repoLink) throws GitAPIException, IOException {
 
         File dir = createTempDirectory();
 
-        try(
+        try (
                 Git result = Git.cloneRepository()
                         .setProgressMonitor(new TextProgressMonitor(new PrintWriter(System.out)))
                         .setURI(repoLink)
@@ -31,7 +32,7 @@ public class GitCloneService {
         }
 
         printAllFileList(dir.getAbsolutePath());
-        return DIRECTORY+ "Git Repo";
+        return DIRECTORY + "Git Repo";
     }
 
     public File createTempDirectory() {

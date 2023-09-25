@@ -1,7 +1,10 @@
 package com.example.bug_localizer.utils.graph;
 
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 
+@Component
 public class CreateGraphFromNaturalLanguage {
 
     public int[][] representGraphAsMatrix(List<String> sentences, Map<Integer, String> wordMap) {
@@ -71,17 +74,5 @@ public class CreateGraphFromNaturalLanguage {
             }
         }
         return wordMap;
-    }
-
-    public static void main(String[] args) {
-        CreateGraphFromNaturalLanguage graph = new CreateGraphFromNaturalLanguage();
-        List<String> sentences = new ArrayList<>();
-        sentences.add("get Context Class Loader");
-//        sentences.add("IIT DU");
-//        sentences.add("Bug Localizer");
-//        sentences.add("Final Semester IIT DU");
-        Map<Integer, String> wordMap = graph.representStringToMap(sentences);
-        System.out.println(wordMap);
-        System.out.println(graph.representGraphAsMatrix(sentences, wordMap));
     }
 }

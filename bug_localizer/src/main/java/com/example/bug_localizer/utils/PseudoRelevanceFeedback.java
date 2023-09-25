@@ -9,12 +9,14 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class PseudoRelevanceFeedback {
     public String getNormalizedBugReportTitle(String bugReport) throws IOException {
         TextNormalizer normalizer = new TextNormalizer();
@@ -83,20 +85,5 @@ public class PseudoRelevanceFeedback {
         }
         System.out.println(fieldDeclarations);
         return fieldDeclarations;
-    }
-
-    public static void main(String[] args) throws IOException, ParseException {
-        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
-        FileReader fileReader = new FileReader();
-        String query = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/38216.txt");
-
-        List<String> normalizedText = feedback.normalizeText(query);
-        System.out.println("query: " + feedback.getNormalizedBugReportTitle(query));
-        String baselineQuery = feedback.listToString(normalizedText);
-        System.out.println(baselineQuery);
-        List<String> topDocumentsPath = feedback.getTopDocsFromBaselineQuery(baselineQuery);
-
-        List<String> methodDeclarations = feedback.getAllMethodNamesFromTopDocuments(topDocumentsPath);
-        List<String> fieldDeclarations = feedback.getAllFieldDeclarationsFromTopDocuments(topDocumentsPath);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.bug_localizer.utils;
 
-import java.io.IOException;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Component
 public class ClassifyBugReport {
 
     public boolean haveStackTrace(String bugReport) {
@@ -40,20 +42,19 @@ public class ClassifyBugReport {
         traces.forEach(t -> {
             List<String> splits = Arrays.stream(t.split("\\.")).toList();
             String className = null;
-            if(splits.size() >= 2){
-                className = splits.get(splits.size()-2);
+            if (splits.size() >= 2) {
+                className = splits.get(splits.size() - 2);
             }
             classes.add(className);
         });
-        List<String> uniqueClasses = classes.stream().distinct().collect(Collectors.toList());
-        return uniqueClasses;
+        return classes.stream().distinct().collect(Collectors.toList());
     }
 
     public List<String> getAllMethodsFromStackTraces(List<String> traces) {
         List<String> methods = new ArrayList<>();
         traces.forEach(t -> {
             List<String> splits = Arrays.stream(t.split("\\.")).toList();
-            String methodName = splits.get(splits.size()-1);
+            String methodName = splits.get(splits.size() - 1);
             methods.add(methodName);
         });
         List<String> uniqueMethods = methods.stream().distinct().collect(Collectors.toList());
@@ -61,33 +62,16 @@ public class ClassifyBugReport {
     }
 
     public String getMethodFromStackTrace(String traces) {
-            List<String> splits = Arrays.stream(traces.split("\\.")).toList();
-            return splits.get(splits.size()-1);
+        List<String> splits = Arrays.stream(traces.split("\\.")).toList();
+        return splits.get(splits.size() - 1);
     }
 
     public String getClassFromStackTrace(String traces) {
         List<String> splits = Arrays.stream(traces.split("\\.")).toList();
         String className = null;
-        if(splits.size() >= 2){
-            className = splits.get(splits.size()-2);
+        if (splits.size() >= 2) {
+            className = splits.get(splits.size() - 2);
         }
         return className;
     }
-
-    public static void main(String[] args) throws IOException {
-        ClassifyBugReport classifyBugReport = new ClassifyBugReport();
-        FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFile("/home/sami/Desktop/33100.txt");
-
-        List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
-        System.out.println(classifyBugReport.haveStackTrace(bugReport));
-        if(traces.size() > 0) {
-            System.out.println("Type is ST");
-            List<String> classes = classifyBugReport.getAllClassesFromStackTraces(traces);
-            List<String> methods = classifyBugReport.getAllMethodsFromStackTraces(traces);
-            System.out.println(classes);
-            System.out.println(methods);
-        }
-    }
-
 }

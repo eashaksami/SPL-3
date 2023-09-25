@@ -1,14 +1,14 @@
 package com.example.bug_localizer.utils.graph;
 
 import com.example.bug_localizer.utils.ClassifyBugReport;
-import com.example.bug_localizer.utils.FileReader;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class CreateGraphFromStackTrace {
     public int[][] representGraphAsMatrix(List<String> traces, Map<Integer, String> tracesMap) {
         Integer previousClassIndex = null;
@@ -17,12 +17,12 @@ public class CreateGraphFromStackTrace {
         int graph[][] = new int[tracesMap.size()][tracesMap.size()];
         int count = 0;
 
-        for(String trace : traces) {
+        for (String trace : traces) {
             count++;
             ClassifyBugReport classifyBugReport = new ClassifyBugReport();
             String className = classifyBugReport.getClassFromStackTrace(trace);
             String methodName = classifyBugReport.getMethodFromStackTrace(trace);
-            Integer classIndex=0, methodIndex=0;
+            Integer classIndex = 0, methodIndex = 0;
 
             for (Map.Entry<Integer, String> entry : tracesMap.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().equals(className)) {
@@ -41,17 +41,17 @@ public class CreateGraphFromStackTrace {
              * graph[sourceNode][destinationNode]
              * Mi -> Mj
              * */
-            if(previousClassIndex != null) {
+            if (previousClassIndex != null) {
                 graph[classIndex][previousClassIndex] = 1;
             }
 
-            if(previousMethodIndex != null) {
+            if (previousMethodIndex != null) {
                 graph[methodIndex][previousMethodIndex] = 1;
             }
 
             previousClassIndex = classIndex;
             previousMethodIndex = methodIndex;
-            if(count==15)break;
+            if (count == 15) break;
         }
 //        for(int i = 0; i < 100; i++) {
 //            for(int j = 0; j < 100; j++)
@@ -63,9 +63,9 @@ public class CreateGraphFromStackTrace {
     }
 
     public void printTraceGraph(int[][] graph, Map<Integer, String> tracesMap) {
-        for(int i = 0; i < tracesMap.size(); i++) {
-            for(int j = 0; j < tracesMap.size(); j++) {
-                if(graph[i][j] == 1) {
+        for (int i = 0; i < tracesMap.size(); i++) {
+            for (int j = 0; j < tracesMap.size(); j++) {
+                if (graph[i][j] == 1) {
                     System.out.println("Graph value: " + tracesMap.get(i) + "=>" + tracesMap.get(j));
                 }
             }
@@ -87,24 +87,12 @@ public class CreateGraphFromStackTrace {
 
         Iterator<String> itrClasses = classes.iterator();
         Iterator<String> itrMethod = methods.iterator();
-        while(itrClasses.hasNext() && itrMethod.hasNext()) {
+        while (itrClasses.hasNext() && itrMethod.hasNext()) {
             tracesMap.put(i, itrClasses.next());
-            tracesMap.put(i+1, itrMethod.next());
-            i +=2;
+            tracesMap.put(i + 1, itrMethod.next());
+            i += 2;
         }
 //        System.out.println(tracesMap);
         return tracesMap;
-    }
-
-    public static void main(String[] args) throws IOException {
-        CreateGraphFromStackTrace graphToMatrixRepresentation = new CreateGraphFromStackTrace();
-        FileReader fileReader = new FileReader();
-        String bugReport = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/BR-Raw/tomcat70/50027.txt");
-        ClassifyBugReport classifyBugReport = new ClassifyBugReport();
-        List<String> traces = classifyBugReport.getAllStackTraces(bugReport);
-        Map<Integer, String> tracesMap = graphToMatrixRepresentation.representStringToMap(
-                classifyBugReport.getAllClassesFromStackTraces(traces),
-                classifyBugReport.getAllMethodsFromStackTraces(traces));
-        graphToMatrixRepresentation.representGraphAsMatrix(traces, tracesMap);
     }
 }
