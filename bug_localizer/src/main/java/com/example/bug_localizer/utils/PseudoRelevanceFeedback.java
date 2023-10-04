@@ -2,8 +2,8 @@ package com.example.bug_localizer.utils;
 
 import com.example.bug_localizer.staticData.StaticData;
 import com.example.bug_localizer.test.AstParser;
-import com.example.bug_localizer.utils.lucene.Searcher;
 import com.example.bug_localizer.test.TextNormalizer;
+import com.example.bug_localizer.utils.lucene.Searcher;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.ScoreDoc;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PseudoRelevanceFeedback {
@@ -28,24 +27,13 @@ public class PseudoRelevanceFeedback {
         return feedback.listToString(title);
     }
 
-    public String removeSpecialCharacterFromTitle(String bugReport) throws IOException {
-        TextNormalizer normalizer = new TextNormalizer();
-        PseudoRelevanceFeedback feedback = new PseudoRelevanceFeedback();
-        List<String> title = new ArrayList<>();
-        String[] lines = bugReport.split("\\r?\\n");
-        title.add(lines[0]);
-        title = normalizer.removeStopWords(lines[0]);
-        String result = lines[0].replaceAll("[^a-zA-Z]", "");
-        return result;
-    }
-
     public List<String> normalizeText(String query) throws IOException {
         TextNormalizer textNormalizer = new TextNormalizer();
         return textNormalizer.removeStopWords(query);
     }
 
     public String listToString(List<String> stringList) {
-        return stringList.stream().collect(Collectors.joining(" "));
+        return String.join(" ", stringList);
     }
 
     public List<String> getTopDocsFromBaselineQuery(String baselineQuery) throws IOException, ParseException {
@@ -55,7 +43,7 @@ public class PseudoRelevanceFeedback {
         TopDocs hits = searcher.search(baselineQuery, 10);
         System.out.println(hits.totalHits + " documents found. ");
 
-        for(ScoreDoc scoreDoc: hits.scoreDocs) {
+        for (ScoreDoc scoreDoc : hits.scoreDocs) {
             Document document = Searcher.indexSearcher.doc(scoreDoc.doc);
             System.out.println("File: " + document.get("filepath") + " Score: " + scoreDoc.score);
             topDocumentsPath.add(document.get("filepath"));
@@ -67,7 +55,7 @@ public class PseudoRelevanceFeedback {
         AstParser astParser = new AstParser();
         List<String> methodNames = new ArrayList<>();
 
-        for (String documentPath: documentsPath) {
+        for (String documentPath : documentsPath) {
             CompilationUnit cu = astParser.getCompilationUnit(documentPath);
             methodNames.addAll(astParser.getAllMethodNames(cu));
         }
@@ -79,7 +67,7 @@ public class PseudoRelevanceFeedback {
         AstParser astParser = new AstParser();
         List<String> fieldDeclarations = new ArrayList<>();
 
-        for (String documentPath: documentsPath) {
+        for (String documentPath : documentsPath) {
             CompilationUnit cu = astParser.getCompilationUnit(documentPath);
             fieldDeclarations.addAll(astParser.getAllFieldSignatures(cu));
         }

@@ -11,16 +11,12 @@ public class FileReader {
 
     public String readFile(String filePath) throws IOException {
         java.io.FileReader fr = new java.io.FileReader(filePath);
-        String fileContent = "";
+        StringBuilder fileContent = new StringBuilder();
         int i;
         while ((i = fr.read()) != -1) {
-
-            // Print all the content of a file
-//            System.out.print((char) i);
-            fileContent += (char) i;
+            fileContent.append((char) i);
         }
-//        System.out.println(fileContent);
-        return fileContent;
+        return fileContent.toString();
     }
 
     public String readMultipartFile(MultipartFile file) throws IOException {

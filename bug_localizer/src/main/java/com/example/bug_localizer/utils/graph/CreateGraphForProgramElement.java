@@ -9,8 +9,6 @@ import java.util.*;
 @Component
 public class CreateGraphForProgramElement {
 
-    Map<Integer, String> wordMap = new HashMap<>();
-
     public int[][] representGraphAsMatrix(List<String> words, Map<Integer, String> wordMap, int[][] graph) {
 
 //        for(String sentence: sentences) {

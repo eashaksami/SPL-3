@@ -32,10 +32,6 @@ public class ResultValidation {
         return fileNameAndNumberMap;
     }
 
-    public void convertFileNoToFileName(String fileName, Map<String, String> fileNamesMap) {
-
-    }
-
     public List<String> changedFilesList(String file) {
         String[] files = file.split("\\r?\\n");
         List<String> fileNames = new ArrayList<>();

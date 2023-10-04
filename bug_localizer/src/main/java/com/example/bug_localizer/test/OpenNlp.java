@@ -20,13 +20,13 @@ public class OpenNlp {
         String[] tokens = tokenizer.tokenize(query);
 
         InputStream inputStreamPOSTagger = new FileInputStream(
-        "/home/sami/Desktop/SPL-3/SPL-3/bug_localizer/src/en-pos-maxent.bin");
+                "/home/sami/Desktop/SPL-3/SPL-3/bug_localizer/src/en-pos-maxent.bin");
         POSModel posModel = new POSModel(inputStreamPOSTagger);
         POSTaggerME posTagger = new POSTaggerME(posModel);
-        String tags[] = posTagger.tag(tokens);
+        String[] tags = posTagger.tag(tokens);
         Map<String, Set<String>> posMap = new HashMap<>();
-        for(int i = 0; i < tags.length; i++) {
-            if(!posMap.containsKey(tags[i])) {
+        for (int i = 0; i < tags.length; i++) {
+            if (!posMap.containsKey(tags[i])) {
                 Set<String> value = new HashSet<>();
                 value.add(tokens[i]);
                 posMap.put(tags[i], value);

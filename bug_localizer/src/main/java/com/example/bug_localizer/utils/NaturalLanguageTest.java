@@ -12,7 +12,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -27,9 +26,6 @@ public class NaturalLanguageTest {
 
         String fileContent = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/Lucene-Index2File-Mapping/ecf.ckeys");
         Map<String, String> fileNoAndNameMap = validation.getFileNameAndNumber(fileContent);
-
-        File resultMap = new File("natural_language.txt");
-        resultMap.createNewFile();
 
         bugIds.forEach(bugId -> {
             String bugReport = null;
@@ -53,9 +49,7 @@ public class NaturalLanguageTest {
             List<String> topDocumentsPath = null;
             try {
                 topDocumentsPath = feedback.getTopDocsFromBaselineQuery(baselineQuery);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (ParseException e) {
+            } catch (IOException | ParseException e) {
                 throw new RuntimeException(e);
             }
 
@@ -72,9 +66,7 @@ public class NaturalLanguageTest {
                 throw new RuntimeException(e);
             }
 
-            Set<String> methodsAndFieldsList = new HashSet<>();
-            methodsAndFieldsList.addAll(methodDeclarations);
-//            methodsAndFieldsList.addAll(fieldDeclarations);
+            Set<String> methodsAndFieldsList = new HashSet<>(methodDeclarations);
 
             System.out.println(methodDeclarations.size());
             System.out.println(fieldDeclarations.size());
@@ -92,8 +84,8 @@ public class NaturalLanguageTest {
             TextNormalizer finalTextNormalizerTest = textNormalizerTest;
             methodsAndFieldsList.forEach(list -> {
                 try {
-                    String splittedSentence = finalTextNormalizerTest.removeStopWordsAndJavaKeywords(regexTest.splitCamelCase(list))
-                            .stream().collect(Collectors.joining(" "));
+                    String splittedSentence = String.join(" ",
+                            finalTextNormalizerTest.removeStopWordsAndJavaKeywords(regexTest.splitCamelCase(list)));
                     splittedList.add(splittedSentence);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -108,11 +100,11 @@ public class NaturalLanguageTest {
 
 
             CalculatePageRank calculatePageRank = new CalculatePageRank();
-            double [] pageRanks = calculatePageRank.pageRank(naturalLanguageGraph);
+            double[] pageRanks = calculatePageRank.pageRank(naturalLanguageGraph);
             Map<String, Double> pageRanksMap = new HashMap<>();
             for (int i = 0; i < pageRanks.length; i++) {
                 pageRanksMap.put(naturalLanguageMap.get(i), pageRanks[i]);
-                System.out.println("Page Rank at: " + naturalLanguageMap.get(i) + " "+pageRanks[i]);
+                System.out.println("Page Rank at: " + naturalLanguageMap.get(i) + " " + pageRanks[i]);
             }
 
             pageRanksMap = pageRanksMap.entrySet()
@@ -125,8 +117,8 @@ public class NaturalLanguageTest {
             pageRanksMap.keySet().removeIf(Objects::isNull);
             System.out.println(pageRanksMap);
             int size = pageRanksMap.size();
-            if(size > 15){
-                pageRanksMap.keySet().removeAll(Arrays.asList(pageRanksMap.keySet().toArray()).subList(15, size));
+            if (size > 15) {
+                Arrays.asList(pageRanksMap.keySet().toArray()).subList(15, size).forEach(pageRanksMap.keySet()::remove);
             }
             System.out.println(pageRanksMap);
             String searchQuery = null;
@@ -135,7 +127,7 @@ public class NaturalLanguageTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            searchQuery += " " + pageRanksMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+            searchQuery += " " + String.join(" ", pageRanksMap.keySet());
             System.out.println(searchQuery.trim());
 
             Searcher searcher = null;
@@ -148,9 +140,7 @@ public class NaturalLanguageTest {
             TopDocs hits = null;
             try {
                 hits = searcher.search(searchQuery, 20);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
+            } catch (ParseException | IOException e) {
                 throw new RuntimeException(e);
             }
             System.out.println(hits.totalHits + " documents found. ");
@@ -164,11 +154,10 @@ public class NaturalLanguageTest {
             }
             List<String> changedFilesList = validation.changedFilesList(changedFilesContent);
 
-            List<String> buggyFiles = new ArrayList<>();
             int i = 0;
             String content = "";
 
-            for(ScoreDoc scoreDoc: hits.scoreDocs) {
+            for (ScoreDoc scoreDoc : hits.scoreDocs) {
                 content = "";
                 Document document = null;
                 try {
@@ -177,19 +166,15 @@ public class NaturalLanguageTest {
                     throw new RuntimeException(e);
                 }
                 String buggyFileName = fileNoAndNameMap.get(document.get("filename"));
-                System.out.println(buggyFileName);
-                buggyFiles.add(buggyFileName);
 
-//                System.out.println(i + 1);
                 content = bugId + "    ";
-                if(changedFilesList.contains(buggyFileName)) {
+                if (changedFilesList.contains(buggyFileName)) {
                     content += i + 1 + "\n";
                     break;
                 }
                 content += "\n";
 
                 i++;
-//                System.out.println("File: " + document.get("filename") + " Score: " + scoreDoc.score);
             }
             BufferedWriter out = null;
             try {

@@ -14,7 +14,7 @@ public class CreateGraphFromStackTrace {
         Integer previousClassIndex = null;
         Integer previousMethodIndex = null;
 
-        int graph[][] = new int[tracesMap.size()][tracesMap.size()];
+        int[][] graph = new int[tracesMap.size()][tracesMap.size()];
         int count = 0;
 
         for (String trace : traces) {
@@ -53,23 +53,7 @@ public class CreateGraphFromStackTrace {
             previousMethodIndex = methodIndex;
             if (count == 15) break;
         }
-//        for(int i = 0; i < 100; i++) {
-//            for(int j = 0; j < 100; j++)
-//                System.out.println(graph[i][j] + " ");
-//            System.out.println();
-//        }
-        printTraceGraph(graph, tracesMap);
         return graph;
-    }
-
-    public void printTraceGraph(int[][] graph, Map<Integer, String> tracesMap) {
-        for (int i = 0; i < tracesMap.size(); i++) {
-            for (int j = 0; j < tracesMap.size(); j++) {
-                if (graph[i][j] == 1) {
-                    System.out.println("Graph value: " + tracesMap.get(i) + "=>" + tracesMap.get(j));
-                }
-            }
-        }
     }
 
     public Map<Integer, String> representStringToMap(List<String> classes, List<String> methods) {
@@ -92,7 +76,6 @@ public class CreateGraphFromStackTrace {
             tracesMap.put(i + 1, itrMethod.next());
             i += 2;
         }
-//        System.out.println(tracesMap);
         return tracesMap;
     }
 }

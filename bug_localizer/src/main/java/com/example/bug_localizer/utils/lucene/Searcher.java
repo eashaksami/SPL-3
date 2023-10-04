@@ -33,11 +33,6 @@ public class Searcher {
         return indexSearcher.search(query, noOfBugReports);
     }
 
-    public TopDocs searchNDocs(String searchQuery) throws ParseException, IOException {
-        Query query = queryParser.parse(searchQuery);
-        return indexSearcher.search(query, 1000);
-    }
-
     public static void main(String[] args) throws IOException, ParseException {
         Searcher searcher = new Searcher(StaticData.indexDir);
         String searchQuery = "sami";
@@ -45,7 +40,7 @@ public class Searcher {
         TopDocs hits = searcher.search(searchQuery, 10);
         System.out.println(hits.totalHits + " documents found. ");
 
-        for(ScoreDoc scoreDoc: hits.scoreDocs) {
+        for (ScoreDoc scoreDoc : hits.scoreDocs) {
             Document document = indexSearcher.doc(scoreDoc.doc);
             System.out.println("File: " + document.get("filepath") + "Score: " + scoreDoc.score);
         }

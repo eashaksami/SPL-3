@@ -1,8 +1,8 @@
 package com.example.bug_localizer.utils;
 
 import com.example.bug_localizer.staticData.StaticData;
-import com.example.bug_localizer.utils.lucene.Searcher;
 import com.example.bug_localizer.utils.graph.CreateGraphFromStackTrace;
+import com.example.bug_localizer.utils.lucene.Searcher;
 import com.example.bug_localizer.utils.pageRank.CalculatePageRank;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -10,7 +10,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -25,9 +24,6 @@ public class StackTraceTest {
 
         String fileContent = fileReader.readFile("/home/sami/Desktop/SPL-3/BLIZZARD-Replication-Package-ESEC-FSE2018/Lucene-Index2File-Mapping/tomcat70.ckeys");
         Map<String, String> fileNoAndNameMap = validation.getFileNameAndNumber(fileContent);
-
-        File resultMap = new File("stack_trace.txt");
-        resultMap.createNewFile();
 
         bugIds.forEach(bugId -> {
             ClassifyBugReport classifyBugReport = new ClassifyBugReport();
@@ -51,11 +47,11 @@ public class StackTraceTest {
             int[][] traceGraph = stackTraceGraph.representGraphAsMatrix(traces, tracesMap);
 //        System.out.println(traceGraph);
             CalculatePageRank calculatePageRank = new CalculatePageRank();
-            double [] pageRanks = calculatePageRank.pageRank(traceGraph);
+            double[] pageRanks = calculatePageRank.pageRank(traceGraph);
             Map<String, Double> pageRanksMap = new HashMap<>();
             for (int i = 0; i < pageRanks.length; i++) {
                 pageRanksMap.put(tracesMap.get(i), pageRanks[i]);
-                System.out.println("Page Rank at: " + tracesMap.get(i) + " "+pageRanks[i]);
+                System.out.println("Page Rank at: " + tracesMap.get(i) + " " + pageRanks[i]);
             }
 
             pageRanksMap = pageRanksMap.entrySet()
@@ -68,8 +64,8 @@ public class StackTraceTest {
             pageRanksMap.keySet().removeIf(Objects::isNull);
             System.out.println(pageRanksMap);
             int size = pageRanksMap.size();
-            if(size > 10){
-                pageRanksMap.keySet().removeAll(Arrays.asList(pageRanksMap.keySet().toArray()).subList(10, size));
+            if (size > 10) {
+                Arrays.asList(pageRanksMap.keySet().toArray()).subList(10, size).forEach(pageRanksMap.keySet()::remove);
             }
             System.out.println(pageRanksMap);
 
@@ -80,7 +76,7 @@ public class StackTraceTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            searchQuery += " " + pageRanksMap.entrySet().stream().map(Map.Entry:: getKey).collect(Collectors.joining(" "));
+            searchQuery += " " + String.join(" ", pageRanksMap.keySet());
 
             System.out.println(searchQuery.trim());
 
@@ -94,9 +90,7 @@ public class StackTraceTest {
             TopDocs hits = null;
             try {
                 hits = searcher.search(searchQuery, 20);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
+            } catch (ParseException | IOException e) {
                 throw new RuntimeException(e);
             }
             System.out.println(hits.totalHits + " documents found. ");
@@ -110,10 +104,9 @@ public class StackTraceTest {
             }
             List<String> changedFilesList = validation.changedFilesList(changedFilesContent);
 
-            List<String> buggyFiles = new ArrayList<>();
             int i = 0;
             String content = "";
-            for(ScoreDoc scoreDoc: hits.scoreDocs) {
+            for (ScoreDoc scoreDoc : hits.scoreDocs) {
                 content = "";
                 Document document = null;
                 try {
@@ -122,25 +115,20 @@ public class StackTraceTest {
                     throw new RuntimeException(e);
                 }
                 String buggyFileName = fileNoAndNameMap.get(document.get("filename"));
-                System.out.println(buggyFileName);
-                buggyFiles.add(buggyFileName);
 
-//                System.out.println(i + 1);
                 content = bugId + "    ";
-                if(changedFilesList.contains(buggyFileName)) {
+                if (changedFilesList.contains(buggyFileName)) {
                     content += i + 1 + "\n";
                     break;
                 }
                 content += "\n";
 
                 i++;
-//            System.out.println("File: " + document.get("filename") + " Score: " + scoreDoc.score);
-//                System.out.println(document.get("filename"));
             }
             BufferedWriter out = null;
             try {
-                FileWriter fstream = new FileWriter("stack_trace.txt", true); //true tells to append data.
-                out = new BufferedWriter(fstream);
+                FileWriter fStream = new FileWriter("stack_trace.txt", true); //true tells to append data.
+                out = new BufferedWriter(fStream);
 
                 out.write(content);
                 out.close();

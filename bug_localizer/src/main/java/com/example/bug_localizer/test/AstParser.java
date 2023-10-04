@@ -19,8 +19,7 @@ public class AstParser {
         ASTParser parser = ASTParser.newParser(AST.JLS18);
         parser.setSource(content.toCharArray());
         parser.setKind(ASTParser.K_COMPILATION_UNIT);
-        CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-        return compilationUnit;
+        return (CompilationUnit) parser.createAST(null);
     }
 
     public List<String> getAllClassNames(CompilationUnit compilationUnit) {
@@ -42,16 +41,6 @@ public class AstParser {
             }
         });
         return allMethodNames;
-    }
-
-    public List<String> getAllFieldNames(CompilationUnit compilationUnit) {
-        compilationUnit.accept(new ASTVisitor() {
-            public boolean visit(SingleVariableDeclaration node) {
-                allFieldSignatures.add(node.getName().getIdentifier());
-                return super.visit(node);
-            }
-        });
-        return allFieldSignatures;
     }
 
     public List<String> getAllFieldSignatures(CompilationUnit compilationUnit) {

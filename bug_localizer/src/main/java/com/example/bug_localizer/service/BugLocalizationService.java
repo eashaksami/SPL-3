@@ -97,10 +97,8 @@ public class BugLocalizationService {
         List<String> topDocumentsPath = pseudoRelevanceFeedback.getTopDocsFromBaselineQuery(baselineQuery);
 
         List<String> methodDeclarations = pseudoRelevanceFeedback.getAllMethodNamesFromTopDocuments(topDocumentsPath);
-        List<String> fieldDeclarations = pseudoRelevanceFeedback.getAllFieldDeclarationsFromTopDocuments(topDocumentsPath);
 
-        Set<String> methodsAndFieldsList = new HashSet<>();
-        methodsAndFieldsList.addAll(methodDeclarations);
+        Set<String> methodsAndFieldsList = new HashSet<>(methodDeclarations);
         /**
          * if add field declarations then it adds extra noise which decrease the result accuracy
          * */
@@ -111,8 +109,8 @@ public class BugLocalizationService {
         TextNormalizer textNormalizer = new TextNormalizer();
         methodsAndFieldsList.forEach(list -> {
             try {
-                String splittedSentence = textNormalizer.removeStopWordsAndJavaKeywords(regex.splitCamelCase(list))
-                        .stream().collect(Collectors.joining(" "));
+                String splittedSentence = String.join(" ",
+                        textNormalizer.removeStopWordsAndJavaKeywords(regex.splitCamelCase(list)));
                 splittedList.add(splittedSentence);
             } catch (IOException e) {
                 throw new RuntimeException(e);

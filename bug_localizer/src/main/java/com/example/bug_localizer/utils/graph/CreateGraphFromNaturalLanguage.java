@@ -8,7 +8,7 @@ import java.util.*;
 public class CreateGraphFromNaturalLanguage {
 
     public int[][] representGraphAsMatrix(List<String> sentences, Map<Integer, String> wordMap) {
-        int graph[][] = new int[wordMap.size()][wordMap.size()];
+        int[][] graph = new int[wordMap.size()][wordMap.size()];
         for(String sentence: sentences) {
             Integer previousWordIndex = null;
             Integer currentWordIndex = null;

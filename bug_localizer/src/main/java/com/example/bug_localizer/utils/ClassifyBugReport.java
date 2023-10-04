@@ -57,8 +57,7 @@ public class ClassifyBugReport {
             String methodName = splits.get(splits.size() - 1);
             methods.add(methodName);
         });
-        List<String> uniqueMethods = methods.stream().distinct().collect(Collectors.toList());
-        return uniqueMethods;
+        return methods.stream().distinct().collect(Collectors.toList());
     }
 
     public String getMethodFromStackTrace(String traces) {
